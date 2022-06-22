@@ -8,11 +8,12 @@ options(scipen = 999) # don't display large numbers with scientific notation
 
 ## Libraries ####
 
-library(tidyverse)
 library(DBI)
 library(RSQLite)
+library(tidyverse)
 library(lubridate)
 library(scales)
+library(tidytext)
 
 
 ## Working directory ####
@@ -24,7 +25,9 @@ dir.create(file.path(getwd(), "outputs"), showWarnings = FALSE)
 outputs_folder <- file.path(getwd(), "outputs")
 
 
-## Custom ggplot2 theme ####
+## ggplot settings ####
+
+# Theme
 my_theme <- theme_bw() +
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_blank(),
@@ -32,11 +35,15 @@ my_theme <- theme_bw() +
         axis.title = element_text(size = 10, face = "plain"),
         plot.title = element_text(size = 11, face = "plain"))
 
+# y axis
+my_y_axis <- scale_y_continuous(labels = number_format(accuracy = 1, big.mark = ","))
+
 
 # CONNECT TO SQLITE DATABASE ####
 
 # Existing .db file in current working directory
-con <- dbConnect(SQLite(), "observatory-test.db")
+con <- dbConnect(SQLite(), "auspol.db")
+# auspol.jsonl -> tidy_tweet 0.4 -> auspol.db
 
 
 # EXPLORE DATABASE ####
@@ -45,22 +52,25 @@ con <- dbConnect(SQLite(), "observatory-test.db")
 # dbListTables(con)
 
 # List fields in named table
-# dbListFields(con, "tweet")
-# dbListFields(con, "user")
+# dbListFields(con, "_metadata")
+# dbListFields(con, "hashtag")
 # dbListFields(con, "media")
+# dbListFields(con, "mention")
+# dbListFields(con, "tweet")
 # dbListFields(con, "url")
+# dbListFields(con, "user")
 
 # View records in named table
 # dbReadTable(con, "tweet")
 
 # Save named table as df
+# metadata <- dbReadTable(con, "_metadata")
+# hashtag <- dbReadTable(con, "hashtag")
+# media <- dbReadTable(con, "media")
+# mention <- dbReadTable(con, "mention")
 # tweet <- dbReadTable(con, "tweet")
+# url <- dbReadTable(con, "url")
 # user <- dbReadTable(con, "user")
-
-
-# TIDY DATA ####
-
-# user$created_at_parsed <- ymd_hms(user$created_at)
 
 
 # VISUALISATIONS ####
@@ -77,39 +87,145 @@ dbGetQuery(con,
             GROUP BY username;") %>% 
   slice_max(n = n, order_by = tweet_count, with_ties = TRUE) %>% 
   ggplot(aes(reorder(username, tweet_count), tweet_count)) +
-  geom_bar(stat = "identity") +
+  geom_col() +
   labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
-       x = "Username", y = "Number of tweets") +
-  scale_y_continuous(label = comma) +
+       y = "Number of tweets") +
+  my_y_axis +
   coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
+
+
+## Number of tweets per day/month ####
+
+### Day ####
+dbGetQuery(con,
+           "SELECT count(*) as `tweets`, date(created_at) as `day`
+            FROM tweet
+            GROUP BY day;") %>% 
+  ggplot(aes(ymd(day), tweets)) +
+  geom_line(group = 1) +
+  labs(title = "Number of tweets per day",
+       x = "Day",
+       y = "Number of tweets") +
+  scale_x_date(date_labels = "%d/%m/%Y") +
+  my_y_axis +
+  my_theme
+
+### Month ####
+dbGetQuery(con,
+           "SELECT count(*) as `tweets`, date(created_at) as `day`
+            FROM tweet
+            GROUP BY day;") %>%
+  mutate(month = floor_date(ymd(day), "month")) %>% 
+  group_by(month) %>% 
+  summarise(tweets = sum(tweets)) %>% 
+  ggplot(aes(month, tweets)) +
+  geom_col() +
+  labs(title = "Number of tweets per month",
+       x = "Month",
+       y = "Number of tweets") +
+  scale_x_date(date_labels = "%b %Y") +
+  my_y_axis +
   my_theme
 
 
-## Who is being retweeted the most? ####
-n <- 20
-result <- 
+## Number of unique accounts that tweeted per day/month ####
+
+### Day ####
 dbGetQuery(con,
-           "SELECT tweet.id, tweet.retweeted_tweet_id, tweet.text, user.username as `retweeter_username`
+           "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
             FROM tweet
-            LEFT JOIN (
-              user )
-            ON tweet.author_id = user.id
-            WHERE retweeted_tweet_id IS NOT NULL;")
-View(result)
+            GROUP BY day;") %>% 
+  ggplot(aes(ymd(day), accounts)) +
+  geom_line(group = 1) +
+  labs(title = "Number of unique accounts that tweeted per day",
+       x = "Day",
+       y = "Number of accounts") +
+  scale_x_date(date_labels = "%d/%m/%Y") +
+  my_y_axis +
+  my_theme
 
+### Month ####
 dbGetQuery(con,
-           "SELECT retweeted_tweet_id FROM tweet WHERE retweeted_tweet_id IS NOT NULL;")
+           "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
+            FROM tweet
+            GROUP BY day;") %>% 
+  mutate(month = floor_date(ymd(day), "month")) %>% 
+  group_by(month) %>% 
+  summarise(accounts = sum(accounts)) %>% 
+  ggplot(aes(month, accounts)) +
+  geom_col() +
+  labs(title = "Number of unique accounts that tweeted per month",
+       x = "Month",
+       y = "Number of accounts") +
+  scale_x_date(date_labels = "%b %Y") +
+  my_y_axis +
+  my_theme
 
-
-# IDEAS ####
-
-## Number of tweets per day/week/month ####
-
-## Number of unique accounts per day/week/month ####
 
 ## Top n hashtags ####
 
+n <- 20
+dbGetQuery(con,
+           "SELECT tag, source_id
+            FROM hashtag
+            WHERE source_type = 'tweet';") %>% 
+  mutate(tag = str_to_lower(tag)) %>% 
+  rename(hashtag = tag) %>% 
+  group_by(hashtag) %>% 
+  summarise(tags = n()) %>% 
+  slice_max(n = n, order_by = tags, with_ties = TRUE) %>% 
+  ggplot(aes(reorder(hashtag, tags), tags)) +
+  geom_col() +
+  labs(title = paste0("Top ", n, " hashtags"),
+       y = "Number of tweets") +
+  my_y_axis +
+  coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
+
+
 ## Top n account mentions ####
 
-## Top n domains ####
+n <- 20
+dbGetQuery(con,
+           "SELECT username, source_id
+            FROM hashtag
+            WHERE source_type = 'tweet';") %>% 
+  mutate(tag = str_to_lower(username)) %>% 
+  rename(account = username) %>% 
+  group_by(account) %>% 
+  summarise(mentions = n()) %>% 
+  slice_max(n = n, order_by = mentions, with_ties = TRUE) %>% 
+  ggplot(aes(reorder(account, mentions), mentions)) +
+  geom_col() +
+  labs(title = paste0("Top ", n, " accounts mentioned in tweets"),
+       y = "Number of tweets") +
+  my_y_axis +
+  coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
 
+
+# IDEAS FOR VISUALISATIONS ####
+
+## Top n URLs shared ####
+# Use url table (filter by source == tweet)
+
+## Top n accounts being retweeted ####
+# Regex to detect retweet: "^RT"
+
+## Number of tweets per hour ####
+
+## Most shared image ####
+# Use media table where type == photo
+
+
+# IDEAS FOR FUNCTIONALITY/FEATURES ####
+
+## Ability for user to specify geom_col() or geom_line() ####
+
+## Ability for user to export data frame and/or ggplot ####
+
+## Ability for user to include/exclude retweets ####
