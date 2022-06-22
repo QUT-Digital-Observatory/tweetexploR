@@ -96,7 +96,24 @@ dbGetQuery(con,
   theme(axis.title.y = element_blank())
 
 
-## Number of tweets per day/month ####
+## Number of tweets per hour/day/month ####
+
+### Hour ####
+dbGetQuery(con,
+           "SELECT id, datetime(created_at) as `created_at_datetime`
+            FROM tweet;") %>% 
+  mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>% 
+  mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>% 
+  group_by(created_at_hour) %>% 
+  summarise(tweets = n()) %>% 
+  ggplot(aes(created_at_hour, tweets)) +
+  geom_line(group = 1) +
+  labs(title = "Number of tweets per hour",
+       x = "Hour",
+       y = "Number of tweets") +
+  my_y_axis +
+  my_theme
+  
 
 ### Day ####
 dbGetQuery(con,
@@ -131,6 +148,22 @@ dbGetQuery(con,
 
 
 ## Number of unique accounts that tweeted per day/month ####
+
+### Hour ####
+dbGetQuery(con,
+           "SELECT author_id, datetime(created_at) as `created_at_datetime`
+            FROM tweet;") %>% 
+  mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>% 
+  mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>% 
+  group_by(created_at_hour) %>% 
+  summarise(accounts = n_distinct(author_id)) %>% 
+  ggplot(aes(created_at_hour, accounts)) +
+  geom_line(group = 1) +
+  labs(title = "Number of unique accounts that tweeted per hour",
+       x = "Hour",
+       y = "Number of accounts") +
+  my_y_axis +
+  my_theme
 
 ### Day ####
 dbGetQuery(con,
@@ -215,8 +248,6 @@ dbGetQuery(con,
 
 ## Top n accounts being retweeted ####
 # Regex to detect retweet: "^RT"
-
-## Number of tweets per hour ####
 
 ## Most shared image ####
 # Use media table where type == photo
