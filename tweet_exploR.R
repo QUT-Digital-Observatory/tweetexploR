@@ -241,16 +241,46 @@ dbGetQuery(con,
   theme(axis.title.y = element_blank())
 
 
+## Top n shared images ####
+
+n <- 5
+dbGetQuery(con,
+           "SELECT url
+            FROM media
+            WHERE type = 'photo';")
+
+# How to link these to tweets to find out how many tweets included the image?
+
+
+## Top n retweeted tweets ####
+
+n <- 5
+dbGetQuery(con,
+           "SELECT retweeted_tweet_id, count(*) as `retweets`, text
+            FROM tweet
+            WHERE retweeted_tweet_id IS NOT NULL
+            GROUP BY retweeted_tweet_id;") %>% 
+  slice_max(n = n, order_by = retweets, with_ties = TRUE) %>% 
+  ggplot(aes(reorder(text, retweets), retweets)) +
+  geom_col() +
+  labs(title = paste0("Top ", n, " retweeted tweets"),
+       y = "Number of retweets") +
+  scale_x_discrete(labels = label_wrap(50))+
+  my_y_axis +
+  coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
+
+
 # IDEAS FOR VISUALISATIONS ####
+
+## Top n accounts being retweeted ####
+# Regex to detect retweet in tweet text: "^RT"
+# Can also use tweet.retweeted_tweet_id is not null
 
 ## Top n URLs shared ####
 # Use url table (filter by source == tweet)
-
-## Top n accounts being retweeted ####
-# Regex to detect retweet: "^RT"
-
-## Most shared image ####
-# Use media table where type == photo
+# How to link these to tweets to find out how many tweets included the URL?
 
 
 # IDEAS FOR FUNCTIONALITY/FEATURES ####
@@ -260,3 +290,10 @@ dbGetQuery(con,
 ## Ability for user to export data frame and/or ggplot ####
 
 ## Ability for user to include/exclude retweets ####
+
+
+# NOTES FOR DOCUMENTATION ####
+
+## Include recommended values for n for each visualisation ####
+
+## Include recommended time periods for the hourly/daily/monthly visualisations ####
