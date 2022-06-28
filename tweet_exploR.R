@@ -38,6 +38,9 @@ my_theme <- theme_bw() +
 # y axis
 my_y_axis <- scale_y_continuous(labels = number_format(accuracy = 1, big.mark = ","))
 
+# Set value for n (used in top n charts)
+n <- 10
+
 
 # CONNECT TO SQLITE DATABASE ####
 
@@ -76,7 +79,6 @@ con <- dbConnect(SQLite(), "auspol.db")
 # VISUALISATIONS ####
 
 ## Number of tweets by username (top n usernames) ####
-n <- 20
 dbGetQuery(con,
            "SELECT count(*) as `tweet_count`, username
             FROM tweet
@@ -199,7 +201,6 @@ dbGetQuery(con,
 
 ## Top n hashtags ####
 
-n <- 20
 dbGetQuery(con,
            "SELECT tag, source_id
             FROM hashtag
@@ -221,7 +222,6 @@ dbGetQuery(con,
 
 ## Top n account mentions ####
 
-n <- 20
 dbGetQuery(con,
            "SELECT username, source_id
             FROM mention
@@ -244,7 +244,6 @@ dbGetQuery(con,
 ## Top n retweeted tweets ####
 
 ### Based on number of retweets inside the tweets that were collected ####
-n <- 5
 dbGetQuery(con,
            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
             FROM tweet
@@ -262,7 +261,6 @@ dbGetQuery(con,
   theme(axis.title.y = element_blank())
 
 ### Based on tweet.retweet_count (Twitter metrics) ####
-n <- 5
 dbGetQuery(con,
            "SELECT id, retweet_count, text
             FROM tweet;") %>% 
@@ -281,7 +279,6 @@ dbGetQuery(con,
 ## Top n liked tweets ####
 
 ### Based on tweet.like_count (Twitter metrics) ####
-n <- 10
 dbGetQuery(con,
            "SELECT id, like_count, text
             FROM tweet;") %>% 
@@ -300,7 +297,6 @@ dbGetQuery(con,
 ## Top n replied to tweets ####
 
 ### Based on tweet.reply_count (Twitter metrics) ####
-n <- 10
 dbGetQuery(con,
            "SELECT id, reply_count, text
             FROM tweet;") %>% 
@@ -320,7 +316,6 @@ dbGetQuery(con,
 
 ## Top n shared images ####
 
-n <- 5
 dbGetQuery(con,
            "SELECT url
             FROM media
@@ -330,15 +325,28 @@ dbGetQuery(con,
 # https://developer.twitter.com/en/docs/twitter-ads-api/creatives/guides/identifying-media
 
 
+## Top n URLs shared ####
+
+# Based on sharing within the collection of tweets
+results <-
+dbGetQuery(con,
+           "SELECT tweet.id as `tweet_id`,
+              tweet.text as `text`,
+              url.url as `url`,
+              url.expanded_url as `expanded_url`,
+              url.display_url as `display_url`
+            FROM url
+            LEFT JOIN tweet ON url.source_id = tweet.id
+            WHERE source_type = 'tweet'
+              AND field = 'text';")
+# Need to figure out why the same url appears several times within the same tweet_id
+
+
 # IDEAS FOR VISUALISATIONS ####
 
 ## Top n accounts being retweeted ####
 # Regex to detect retweet in tweet text: "^RT"
 # Can also use tweet.retweeted_tweet_id is not null
-
-## Top n URLs shared ####
-# Use url table (filter by source == tweet)
-# How to link these to tweets to find out how many tweets included the URL?
 
 ## Engagement metric summary ####
 # Retweets, likes, replies, etc. in either a table or a graph of some sort?
