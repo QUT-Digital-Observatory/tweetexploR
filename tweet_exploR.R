@@ -224,7 +224,7 @@ dbGetQuery(con,
 n <- 20
 dbGetQuery(con,
            "SELECT username, source_id
-            FROM hashtag
+            FROM mention
             WHERE source_type = 'tweet';") %>% 
   mutate(tag = str_to_lower(username)) %>% 
   rename(account = username) %>% 
