@@ -243,6 +243,7 @@ dbGetQuery(con,
 
 ## Top n retweeted tweets ####
 
+# Based on number of retweets inside the tweets that were collected
 n <- 5
 dbGetQuery(con,
            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
@@ -252,13 +253,36 @@ dbGetQuery(con,
   slice_max(n = n, order_by = retweets, with_ties = TRUE) %>% 
   ggplot(aes(reorder(text, retweets), retweets)) +
   geom_col() +
-  labs(title = paste0("Top ", n, " retweeted tweets"),
+  labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
        y = "Number of retweets") +
   scale_x_discrete(labels = label_wrap(50))+
   my_y_axis +
   coord_flip() +
   my_theme +
   theme(axis.title.y = element_blank())
+
+# Based on tweet.retweet_count (Twitter metrics)
+n <- 5
+dbGetQuery(con,
+           "SELECT id, retweet_count, text
+            FROM tweet;") %>% 
+  slice_max(n = n, order_by = retweet_count, with_ties = TRUE) %>% 
+  ggplot(aes(reorder(text, retweet_count), retweet_count)) +
+  geom_col() +
+  labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
+       y = "Number of retweets") +
+  scale_x_discrete(labels = label_wrap(50)) +
+  my_y_axis +
+  coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
+
+
+## Top n liked tweets ####
+
+n <- 10
+dbGetQuery(con,
+           "SELECT ")
 
 
 # INCOMPLETE VISUALISATIONS ####
@@ -284,8 +308,6 @@ dbGetQuery(con,
 ## Top n URLs shared ####
 # Use url table (filter by source == tweet)
 # How to link these to tweets to find out how many tweets included the URL?
-
-## Top n liked tweets ####
 
 ## Top n replied to tweets ####
 
