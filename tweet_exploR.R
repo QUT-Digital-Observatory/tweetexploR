@@ -297,6 +297,25 @@ dbGetQuery(con,
   theme(axis.title.y = element_blank())
 
 
+## Top n replied to tweets ####
+
+### Based on tweet.reply_count (Twitter metrics) ####
+n <- 10
+dbGetQuery(con,
+           "SELECT id, reply_count, text
+            FROM tweet;") %>% 
+  slice_max(n = n, order_by = reply_count, with_ties = TRUE) %>% 
+  ggplot(aes(reorder(text, reply_count), reply_count)) +
+  geom_col() +
+  labs(title = paste0("Top ", n, " replied to tweets (Twitter metrics)"),
+       y = "Number of replies") +
+  scale_x_discrete(labels = label_wrap(50)) +
+  my_y_axis +
+  coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
+
+
 # INCOMPLETE VISUALISATIONS ####
 
 ## Top n shared images ####
@@ -320,8 +339,6 @@ dbGetQuery(con,
 ## Top n URLs shared ####
 # Use url table (filter by source == tweet)
 # How to link these to tweets to find out how many tweets included the URL?
-
-## Top n replied to tweets ####
 
 ## Engagement metric summary ####
 # Retweets, likes, replies, etc. in either a table or a graph of some sort?
