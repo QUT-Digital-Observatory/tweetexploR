@@ -243,7 +243,7 @@ dbGetQuery(con,
 
 ## Top n retweeted tweets ####
 
-# Based on number of retweets inside the tweets that were collected
+### Based on number of retweets inside the tweets that were collected ####
 n <- 5
 dbGetQuery(con,
            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
@@ -261,7 +261,7 @@ dbGetQuery(con,
   my_theme +
   theme(axis.title.y = element_blank())
 
-# Based on tweet.retweet_count (Twitter metrics)
+### Based on tweet.retweet_count (Twitter metrics) ####
 n <- 5
 dbGetQuery(con,
            "SELECT id, retweet_count, text
@@ -280,9 +280,21 @@ dbGetQuery(con,
 
 ## Top n liked tweets ####
 
+### Based on tweet.like_count (Twitter metrics) ####
 n <- 10
 dbGetQuery(con,
-           "SELECT ")
+           "SELECT id, like_count, text
+            FROM tweet;") %>% 
+  slice_max(n = n, order_by = like_count, with_ties = TRUE) %>% 
+  ggplot(aes(reorder(text, like_count), like_count)) +
+  geom_col() +
+  labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
+       y = "Number of likes") +
+  scale_x_discrete(labels = label_wrap(50)) +
+  my_y_axis +
+  coord_flip() +
+  my_theme +
+  theme(axis.title.y = element_blank())
 
 
 # INCOMPLETE VISUALISATIONS ####
