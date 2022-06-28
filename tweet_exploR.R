@@ -241,17 +241,6 @@ dbGetQuery(con,
   theme(axis.title.y = element_blank())
 
 
-## Top n shared images ####
-
-n <- 5
-dbGetQuery(con,
-           "SELECT url
-            FROM media
-            WHERE type = 'photo';")
-
-# How to link these to tweets to find out how many tweets included the image?
-
-
 ## Top n retweeted tweets ####
 
 n <- 5
@@ -272,6 +261,20 @@ dbGetQuery(con,
   theme(axis.title.y = element_blank())
 
 
+# INCOMPLETE VISUALISATIONS ####
+
+## Top n shared images ####
+
+n <- 5
+dbGetQuery(con,
+           "SELECT url
+            FROM media
+            WHERE type = 'photo';")
+# To find out how many tweets included the image, the media and/or media_key
+# columns are required in the tweet table.
+# https://developer.twitter.com/en/docs/twitter-ads-api/creatives/guides/identifying-media
+
+
 # IDEAS FOR VISUALISATIONS ####
 
 ## Top n accounts being retweeted ####
@@ -281,6 +284,13 @@ dbGetQuery(con,
 ## Top n URLs shared ####
 # Use url table (filter by source == tweet)
 # How to link these to tweets to find out how many tweets included the URL?
+
+## Top n liked tweets ####
+
+## Top n replied to tweets ####
+
+## Engagement metric summary ####
+# Retweets, likes, replies, etc. in either a table or a graph of some sort?
 
 
 # IDEAS FOR FUNCTIONALITY/FEATURES ####
