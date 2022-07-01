@@ -175,11 +175,18 @@ dbGetQuery(con,
 ## Number of unique accounts that tweeted per day/month ####
 
 ### Hour ####
+
+# User supplied parameters
+lower_limit <- "2022-06-20 06:00:00"
+upper_limit <- "2022-06-21 00:00:00"
+
+# Plot
 dbGetQuery(con,
            "SELECT author_id, datetime(created_at) as `created_at_datetime`
             FROM tweet;") %>% 
   mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>% 
   mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>% 
+  filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>% 
   group_by(created_at_hour) %>% 
   summarise(accounts = n_distinct(author_id)) %>% 
   ggplot(aes(created_at_hour, accounts)) +
@@ -190,11 +197,19 @@ dbGetQuery(con,
   my_y_axis +
   my_theme
 
+
 ### Day ####
+
+# User supplied parameters
+lower_limit <- "2022-06-14"
+upper_limit <- "2022-06-20"
+
+# Plot
 dbGetQuery(con,
            "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
             FROM tweet
             GROUP BY day;") %>% 
+  filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>% 
   ggplot(aes(ymd(day), accounts)) +
   geom_line(group = 1) +
   labs(title = "Number of unique accounts that tweeted per day",
@@ -204,7 +219,15 @@ dbGetQuery(con,
   my_y_axis +
   my_theme
 
+
 ### Month ####
+
+# User supplied parameters
+# Must be the first of the month
+lower_limit <- "2022-05-01"
+upper_limit <- "2022-06-01"
+
+# Plot
 dbGetQuery(con,
            "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
             FROM tweet
@@ -212,6 +235,7 @@ dbGetQuery(con,
   mutate(month = floor_date(ymd(day), "month")) %>% 
   group_by(month) %>% 
   summarise(accounts = sum(accounts)) %>% 
+  filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>% 
   ggplot(aes(month, accounts)) +
   geom_col() +
   labs(title = "Number of unique accounts that tweeted per month",
