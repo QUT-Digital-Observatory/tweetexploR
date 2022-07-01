@@ -172,7 +172,7 @@ dbGetQuery(con,
   my_theme
 
 
-## Number of unique accounts that tweeted per day/month ####
+## Number of unique accounts that tweeted per hour/day/month ####
 
 ### Hour ####
 
