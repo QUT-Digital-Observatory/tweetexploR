@@ -101,11 +101,18 @@ dbGetQuery(con,
 ## Number of tweets per hour/day/month ####
 
 ### Hour ####
+
+# User supplied parameters
+lower_limit <- "2022-06-20 06:00:00"
+upper_limit <- "2022-06-21 00:00:00"
+
+# Plot
 dbGetQuery(con,
            "SELECT id, datetime(created_at) as `created_at_datetime`
             FROM tweet;") %>% 
   mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>% 
   mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>% 
+  filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>% 
   group_by(created_at_hour) %>% 
   summarise(tweets = n()) %>% 
   ggplot(aes(created_at_hour, tweets)) +
@@ -118,10 +125,17 @@ dbGetQuery(con,
   
 
 ### Day ####
+
+# User supplier parameters
+lower_limit <- "2022-06-14"
+upper_limit <- "2022-06-20"
+
+# Plot
 dbGetQuery(con,
            "SELECT count(*) as `tweets`, date(created_at) as `day`
             FROM tweet
             GROUP BY day;") %>% 
+  filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>% 
   ggplot(aes(ymd(day), tweets)) +
   geom_line(group = 1) +
   labs(title = "Number of tweets per day",
@@ -131,14 +145,23 @@ dbGetQuery(con,
   my_y_axis +
   my_theme
 
+
 ### Month ####
+
+# User supplied parameters
+# Must be the first of the month
+lower_limit <- "2022-05-01"
+upper_limit <- "2022-06-01"
+
+# Plot
 dbGetQuery(con,
            "SELECT count(*) as `tweets`, date(created_at) as `day`
             FROM tweet
             GROUP BY day;") %>%
   mutate(month = floor_date(ymd(day), "month")) %>% 
   group_by(month) %>% 
-  summarise(tweets = sum(tweets)) %>% 
+  summarise(tweets = sum(tweets)) %>%
+  filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>% 
   ggplot(aes(month, tweets)) +
   geom_col() +
   labs(title = "Number of tweets per month",
