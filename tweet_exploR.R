@@ -323,8 +323,9 @@ tweet_chars <- 80
 chars_per_line <- 50
 
 dbGetQuery(con,
-           "SELECT id, retweet_count, text
+           "SELECT retweet_count, text
             FROM tweet;") %>% 
+  distinct() %>% 
   slice_max(n = n, order_by = retweet_count, with_ties = TRUE) %>% 
   ggplot(aes(reorder(substr(text, 1, tweet_chars), retweet_count), retweet_count)) +
   geom_col() +
