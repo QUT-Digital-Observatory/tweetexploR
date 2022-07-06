@@ -291,8 +291,12 @@ dbGetQuery(con,
 ## Top n retweeted tweets ####
 
 ### Based on number of retweets inside the tweets that were collected ####
+
 # Number of characters of the tweet to be displayed is determined by tweet_chars
 tweet_chars <- 80
+
+# Number of characters of the tweet to be displayed per line (without breaking a word)
+chars_per_line <- 50
 dbGetQuery(con,
            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
             FROM tweet
@@ -303,15 +307,21 @@ dbGetQuery(con,
   geom_col() +
   labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
        y = "Number of retweets") +
-  scale_x_discrete(labels = label_wrap(40))+
+  scale_x_discrete(labels = label_wrap(chars_per_line))+
   my_y_axis +
   coord_flip() +
   my_theme +
   theme(axis.title.y = element_blank())
 
+
 ### Based on tweet.retweet_count (Twitter metrics) ####
+
 # Number of characters of the tweet to be displayed is determined by tweet_chars
 tweet_chars <- 80
+
+# Number of characters of the tweet to be displayed per line (without breaking a word)
+chars_per_line <- 50
+
 dbGetQuery(con,
            "SELECT id, retweet_count, text
             FROM tweet;") %>% 
@@ -320,7 +330,7 @@ dbGetQuery(con,
   geom_col() +
   labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
        y = "Number of retweets") +
-  scale_x_discrete(labels = label_wrap(50)) +
+  scale_x_discrete(labels = label_wrap(chars_per_line)) +
   my_y_axis +
   coord_flip() +
   my_theme +
