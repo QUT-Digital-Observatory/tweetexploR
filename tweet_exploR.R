@@ -436,9 +436,13 @@ dbGetQuery(con,
 
 ## Ability for user to include/exclude retweets ####
 
+## Ability for user to change colour of lines/bars in plots ####
+
 
 # NOTES FOR DOCUMENTATION ####
 
 ## Include recommended values for n for each visualisation ####
 
 ## Include recommended time periods for the hourly/daily/monthly visualisations ####
+
+## Possibly include a sample .sql file for distribution with the package ####
