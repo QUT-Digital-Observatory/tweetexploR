@@ -291,28 +291,32 @@ dbGetQuery(con,
 ## Top n retweeted tweets ####
 
 ### Based on number of retweets inside the tweets that were collected ####
+# Number of characters of the tweet to be displayed is determined by tweet_chars
+tweet_chars <- 80
 dbGetQuery(con,
            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
             FROM tweet
             WHERE retweeted_tweet_id IS NOT NULL
             GROUP BY retweeted_tweet_id;") %>% 
   slice_max(n = n, order_by = retweets, with_ties = TRUE) %>% 
-  ggplot(aes(reorder(text, retweets), retweets)) +
+  ggplot(aes(reorder(substr(text, 1, tweet_chars), retweets), retweets)) +
   geom_col() +
   labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
        y = "Number of retweets") +
-  scale_x_discrete(labels = label_wrap(50))+
+  scale_x_discrete(labels = label_wrap(40))+
   my_y_axis +
   coord_flip() +
   my_theme +
   theme(axis.title.y = element_blank())
 
 ### Based on tweet.retweet_count (Twitter metrics) ####
+# Number of characters of the tweet to be displayed is determined by tweet_chars
+tweet_chars <- 80
 dbGetQuery(con,
            "SELECT id, retweet_count, text
             FROM tweet;") %>% 
   slice_max(n = n, order_by = retweet_count, with_ties = TRUE) %>% 
-  ggplot(aes(reorder(text, retweet_count), retweet_count)) +
+  ggplot(aes(reorder(substr(text, 1, tweet_chars), retweet_count), retweet_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
        y = "Number of retweets") +
