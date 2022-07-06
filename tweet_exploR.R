@@ -341,15 +341,22 @@ dbGetQuery(con,
 ## Top n liked tweets ####
 
 ### Based on tweet.like_count (Twitter metrics) ####
+
+# Number of characters of the tweet to be displayed is determined by tweet_chars
+tweet_chars <- 80
+
+# Number of characters of the tweet to be displayed per line (without breaking a word)
+chars_per_line <- 50
+
 dbGetQuery(con,
            "SELECT id, like_count, text
             FROM tweet;") %>% 
   slice_max(n = n, order_by = like_count, with_ties = TRUE) %>% 
-  ggplot(aes(reorder(text, like_count), like_count)) +
+  ggplot(aes(reorder(substr(text, 1, tweet_chars), like_count), like_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
        y = "Number of likes") +
-  scale_x_discrete(labels = label_wrap(50)) +
+  scale_x_discrete(labels = label_wrap(chars_per_line)) +
   my_y_axis +
   coord_flip() +
   my_theme +
@@ -359,15 +366,22 @@ dbGetQuery(con,
 ## Top n replied to tweets ####
 
 ### Based on tweet.reply_count (Twitter metrics) ####
+
+# Number of characters of the tweet to be displayed is determined by tweet_chars
+tweet_chars <- 80
+
+# Number of characters of the tweet to be displayed per line (without breaking a word)
+chars_per_line <- 50
+
 dbGetQuery(con,
            "SELECT id, reply_count, text
             FROM tweet;") %>% 
   slice_max(n = n, order_by = reply_count, with_ties = TRUE) %>% 
-  ggplot(aes(reorder(text, reply_count), reply_count)) +
+  ggplot(aes(reorder(substr(text, 1, tweet_chars), reply_count), reply_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " replied to tweets (Twitter metrics)"),
        y = "Number of replies") +
-  scale_x_discrete(labels = label_wrap(50)) +
+  scale_x_discrete(labels = label_wrap(chars_per_line)) +
   my_y_axis +
   coord_flip() +
   my_theme +
