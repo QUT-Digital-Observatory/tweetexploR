@@ -1,10 +1,10 @@
 Package: tweetexploR
-Title: What the Package Does (One Line, Title Case)
+Title: Explore Tidy Tweet Databases
 Version: 0.0.0.9000
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Explore and visualise a collection of tweets that have been tidied into an SQLite database file by tidy-tweet.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
@@ -13,3 +13,10 @@ RoxygenNote: 7.1.2
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Imports: 
+    magrittr,
+    DBI,
+    RSQLite,
+    ggplot2,
+    scales,
+    dplyr

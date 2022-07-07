@@ -16,15 +16,6 @@ library(scales)
 library(tidytext)
 
 
-## Working directory ####
-
-# Create new folder for outputs if it doesn't already exist
-dir.create(file.path(getwd(), "outputs"), showWarnings = FALSE)
-
-# Get subdirectory for outputs folder
-outputs_folder <- file.path(getwd(), "outputs")
-
-
 ## ggplot settings ####
 
 # Theme
@@ -86,8 +77,8 @@ dbGetQuery(con,
               SELECT username, id
               FROM user ) user
             ON user.id = tweet.author_id
-            GROUP BY username;") %>% 
-  slice_max(n = n, order_by = tweet_count, with_ties = TRUE) %>% 
+            GROUP BY username;") %>%
+  slice_max(n = n, order_by = tweet_count, with_ties = TRUE) %>%
   ggplot(aes(reorder(username, tweet_count), tweet_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
@@ -109,12 +100,12 @@ upper_limit <- "2022-06-21 00:00:00"
 # Plot
 dbGetQuery(con,
            "SELECT id, datetime(created_at) as `created_at_datetime`
-            FROM tweet;") %>% 
-  mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>% 
-  mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>% 
-  filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>% 
-  group_by(created_at_hour) %>% 
-  summarise(tweets = n()) %>% 
+            FROM tweet;") %>%
+  mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>%
+  mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>%
+  filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>%
+  group_by(created_at_hour) %>%
+  summarise(tweets = n()) %>%
   ggplot(aes(created_at_hour, tweets)) +
   geom_line(group = 1) +
   labs(title = "Number of tweets per hour",
@@ -122,7 +113,7 @@ dbGetQuery(con,
        y = "Number of tweets") +
   my_y_axis +
   my_theme
-  
+
 
 ### Day ####
 
@@ -134,8 +125,8 @@ upper_limit <- "2022-06-20"
 dbGetQuery(con,
            "SELECT count(*) as `tweets`, date(created_at) as `day`
             FROM tweet
-            GROUP BY day;") %>% 
-  filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>% 
+            GROUP BY day;") %>%
+  filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>%
   ggplot(aes(ymd(day), tweets)) +
   geom_line(group = 1) +
   labs(title = "Number of tweets per day",
@@ -158,10 +149,10 @@ dbGetQuery(con,
            "SELECT count(*) as `tweets`, date(created_at) as `day`
             FROM tweet
             GROUP BY day;") %>%
-  mutate(month = floor_date(ymd(day), "month")) %>% 
-  group_by(month) %>% 
+  mutate(month = floor_date(ymd(day), "month")) %>%
+  group_by(month) %>%
   summarise(tweets = sum(tweets)) %>%
-  filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>% 
+  filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>%
   ggplot(aes(month, tweets)) +
   geom_col() +
   labs(title = "Number of tweets per month",
@@ -183,12 +174,12 @@ upper_limit <- "2022-06-21 00:00:00"
 # Plot
 dbGetQuery(con,
            "SELECT author_id, datetime(created_at) as `created_at_datetime`
-            FROM tweet;") %>% 
-  mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>% 
-  mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>% 
-  filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>% 
-  group_by(created_at_hour) %>% 
-  summarise(accounts = n_distinct(author_id)) %>% 
+            FROM tweet;") %>%
+  mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>%
+  mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>%
+  filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>%
+  group_by(created_at_hour) %>%
+  summarise(accounts = n_distinct(author_id)) %>%
   ggplot(aes(created_at_hour, accounts)) +
   geom_line(group = 1) +
   labs(title = "Number of unique accounts that tweeted per hour",
@@ -208,8 +199,8 @@ upper_limit <- "2022-06-20"
 dbGetQuery(con,
            "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
             FROM tweet
-            GROUP BY day;") %>% 
-  filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>% 
+            GROUP BY day;") %>%
+  filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>%
   ggplot(aes(ymd(day), accounts)) +
   geom_line(group = 1) +
   labs(title = "Number of unique accounts that tweeted per day",
@@ -231,11 +222,11 @@ upper_limit <- "2022-06-01"
 dbGetQuery(con,
            "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
             FROM tweet
-            GROUP BY day;") %>% 
-  mutate(month = floor_date(ymd(day), "month")) %>% 
-  group_by(month) %>% 
-  summarise(accounts = sum(accounts)) %>% 
-  filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>% 
+            GROUP BY day;") %>%
+  mutate(month = floor_date(ymd(day), "month")) %>%
+  group_by(month) %>%
+  summarise(accounts = sum(accounts)) %>%
+  filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>%
   ggplot(aes(month, accounts)) +
   geom_col() +
   labs(title = "Number of unique accounts that tweeted per month",
@@ -251,12 +242,12 @@ dbGetQuery(con,
 dbGetQuery(con,
            "SELECT tag, source_id
             FROM hashtag
-            WHERE source_type = 'tweet';") %>% 
-  mutate(tag = str_to_lower(tag)) %>% 
-  rename(hashtag = tag) %>% 
-  group_by(hashtag) %>% 
-  summarise(tags = n()) %>% 
-  slice_max(n = n, order_by = tags, with_ties = TRUE) %>% 
+            WHERE source_type = 'tweet';") %>%
+  mutate(tag = str_to_lower(tag)) %>%
+  rename(hashtag = tag) %>%
+  group_by(hashtag) %>%
+  summarise(tags = n()) %>%
+  slice_max(n = n, order_by = tags, with_ties = TRUE) %>%
   ggplot(aes(reorder(hashtag, tags), tags)) +
   geom_col() +
   labs(title = paste0("Top ", n, " hashtags"),
@@ -272,12 +263,12 @@ dbGetQuery(con,
 dbGetQuery(con,
            "SELECT username, source_id
             FROM mention
-            WHERE source_type = 'tweet';") %>% 
-  mutate(tag = str_to_lower(username)) %>% 
-  rename(account = username) %>% 
-  group_by(account) %>% 
-  summarise(mentions = n()) %>% 
-  slice_max(n = n, order_by = mentions, with_ties = TRUE) %>% 
+            WHERE source_type = 'tweet';") %>%
+  mutate(tag = str_to_lower(username)) %>%
+  rename(account = username) %>%
+  group_by(account) %>%
+  summarise(mentions = n()) %>%
+  slice_max(n = n, order_by = mentions, with_ties = TRUE) %>%
   ggplot(aes(reorder(account, mentions), mentions)) +
   geom_col() +
   labs(title = paste0("Top ", n, " accounts mentioned in tweets"),
@@ -301,8 +292,8 @@ dbGetQuery(con,
            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
             FROM tweet
             WHERE retweeted_tweet_id IS NOT NULL
-            GROUP BY retweeted_tweet_id;") %>% 
-  slice_max(n = n, order_by = retweets, with_ties = TRUE) %>% 
+            GROUP BY retweeted_tweet_id;") %>%
+  slice_max(n = n, order_by = retweets, with_ties = TRUE) %>%
   ggplot(aes(reorder(substr(text, 1, tweet_chars), retweets), retweets)) +
   geom_col() +
   labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
@@ -324,9 +315,9 @@ chars_per_line <- 50
 
 dbGetQuery(con,
            "SELECT retweet_count, text
-            FROM tweet;") %>% 
-  distinct() %>% 
-  slice_max(n = n, order_by = retweet_count, with_ties = TRUE) %>% 
+            FROM tweet;") %>%
+  distinct() %>%
+  slice_max(n = n, order_by = retweet_count, with_ties = TRUE) %>%
   ggplot(aes(reorder(substr(text, 1, tweet_chars), retweet_count), retweet_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
@@ -350,8 +341,8 @@ chars_per_line <- 50
 
 dbGetQuery(con,
            "SELECT id, like_count, text
-            FROM tweet;") %>% 
-  slice_max(n = n, order_by = like_count, with_ties = TRUE) %>% 
+            FROM tweet;") %>%
+  slice_max(n = n, order_by = like_count, with_ties = TRUE) %>%
   ggplot(aes(reorder(substr(text, 1, tweet_chars), like_count), like_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
@@ -375,8 +366,8 @@ chars_per_line <- 50
 
 dbGetQuery(con,
            "SELECT id, reply_count, text
-            FROM tweet;") %>% 
-  slice_max(n = n, order_by = reply_count, with_ties = TRUE) %>% 
+            FROM tweet;") %>%
+  slice_max(n = n, order_by = reply_count, with_ties = TRUE) %>%
   ggplot(aes(reorder(substr(text, 1, tweet_chars), reply_count), reply_count)) +
   geom_col() +
   labs(title = paste0("Top ", n, " replied to tweets (Twitter metrics)"),
