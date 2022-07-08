@@ -5,6 +5,9 @@ library(scales)
 library(dplyr)
 
 
+utils::globalVariables(c("tweet_count", "username"))
+
+
 # ggplot2 theme
 configure_ggplot_theme <- function() {
   my_theme <- ggplot2::theme_bw() +
@@ -39,7 +42,7 @@ num_tweets_by_username <- function(sqlite_con, n) {
     ON user.id = tweet.author_id
     GROUP BY username;") %>%
     dplyr::slice_max(n = n, order_by = tweet_count, with_ties = TRUE) %>%
-    ggplot2::ggplot(ggplot2::aes(x = reorder(username, tweet_count), y = tweet_count)) +
+    ggplot2::ggplot(ggplot2::aes(x = stats::reorder(username, tweet_count), y = tweet_count)) +
     ggplot2::geom_col() +
     ggplot2::labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
                   y = "Number of tweets") +
