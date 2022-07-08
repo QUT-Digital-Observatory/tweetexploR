@@ -48,6 +48,3 @@ num_tweets_by_username <- function(sqlite_con, n) {
     configure_ggplot_theme() +
     ggplot2::theme(axis.title.y = ggplot2::element_blank())
 }
-
-sqlite_con <- connect_to_sqlite_db("auspol.db")
-num_tweets_by_username(sqlite_con, 10)
