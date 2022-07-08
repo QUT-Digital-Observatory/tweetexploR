@@ -1,7 +1,6 @@
 ^tweetexploR\.Rproj$
 ^\.Rproj\.user$
-^notes$
 ^LICENSE\.md$
-^auspol.db
-^auspol.jsonl
-^tweet_exploR.R
+^auspol.db$
+^auspol.jsonl$
+^tweet_exploR.R$
