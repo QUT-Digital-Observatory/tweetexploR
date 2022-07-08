@@ -39,11 +39,13 @@ configure_y_axis <- function() {
 #' [tidy-tweet package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
 #'   The path should end with `.db`
 #'
+#' @return Class SQLiteConnection object (more information is available
+#'   [here](https://rsqlite.r-dbi.org/reference/sqliteconnection-class)).
+#'
 #' @examples
 #' \dontrun{
 #' sqlite_con <- connect_to_sqlite_db("my_database.db")
-#' sqlite_con <- connect_to_sqlite_db("my_subfolder\\my_database.db")
-#' }
+#' sqlite_con <- connect_to_sqlite_db("my_subfolder\\my_database.db")}
 #'
 #' @export
 connect_to_sqlite_db <- function(sqlite_file) {

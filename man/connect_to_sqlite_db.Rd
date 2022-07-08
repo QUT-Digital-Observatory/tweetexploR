@@ -11,6 +11,10 @@ connect_to_sqlite_db(sqlite_file)
 \href{https://github.com/QUT-Digital-Observatory/tidy_tweet}{tidy-tweet package}.
 The path should end with \code{.db}}
 }
+\value{
+Class SQLiteConnection object (more information is available
+\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{here}).
+}
 \description{
 Connect to SQLite database file created by the
 \href{https://github.com/QUT-Digital-Observatory/tidy_tweet}{tidy-tweet package}.
@@ -23,7 +27,6 @@ functions.
 \examples{
 \dontrun{
 sqlite_con <- connect_to_sqlite_db("my_database.db")
-sqlite_con <- connect_to_sqlite_db("my_subfolder\\\\my_database.db")
-}
+sqlite_con <- connect_to_sqlite_db("my_subfolder\\\\my_database.db")}
 
 }
