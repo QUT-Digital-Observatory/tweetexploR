@@ -15,11 +15,15 @@ The path should end with \code{.db}}
 Connect to SQLite database file created by the
 \href{https://github.com/QUT-Digital-Observatory/tidy_tweet}{tidy-tweet package}.
 The database contains a collection of tweets in relational tables.
+
 It is recommended to create a variable for the \code{SQLiteConnection} created
 by \code{connect_to_sqlite_db()} so that you can use it for other tweetexploR
 functions.
 }
 \examples{
+\dontrun{
 sqlite_con <- connect_to_sqlite_db("my_database.db")
 sqlite_con <- connect_to_sqlite_db("my_subfolder\\\\my_database.db")
+}
+
 }
