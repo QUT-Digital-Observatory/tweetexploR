@@ -2,5 +2,6 @@
 
 export("%>%")
 export(connect_to_sqlite_db)
+export(num_tweets_by_timeperiod)
 export(num_tweets_by_username)
 importFrom(magrittr,"%>%")

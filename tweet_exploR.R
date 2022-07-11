@@ -437,3 +437,6 @@ dbGetQuery(con,
 ## Include recommended time periods for the hourly/daily/monthly visualisations ####
 
 ## Possibly include a sample .sql file for distribution with the package ####
+
+
+# TODO: Disconnect from database? But when?
