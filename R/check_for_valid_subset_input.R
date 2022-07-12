@@ -44,8 +44,24 @@ check_for_valid_subset_input <- function(period, input) {
   }
 
   else if(period == "month") {
-  # Check for valid `input`
-  # Use lubridate::floor_date(ym(input), unit = "month")
+
+    tryCatch(
+
+      expr = {
+        if(typeof(lubridate::floor_date(lubridate::ym(input), unit = "month")) == "double") {
+        }
+      },
+
+      error = function(e) {
+        print(e)
+      },
+
+      warning = function(w) {
+        print(w)
+        warning("lubridate::ym() could not parse the input.\nEnsure it is in the format '%Y-%m'.\nFor example: '2022-06'")
+      }
+    )
+
   }
 
 }
