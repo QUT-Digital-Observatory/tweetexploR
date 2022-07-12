@@ -13,11 +13,32 @@ object that is a connection to an SQLite .db file created by the
 The database contains a collection of tweets in relational tables. This can
 be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
-\item{period}{can be "hour", "day", or "month". TODO: Default value?}
+\item{period}{Time period for which the tweet frequency will be calculated.
+Accepted values are \code{"hour"}, \code{"day"}, or \code{"month"}. Defaults to \code{"day"}.}
 
-\item{from}{TODO: Should be optional. Default should be no filter.}
+\item{from}{Optional parameter to subset the data to tweets that were created
+on or after the specified date and/or time in \href{https://en.wikipedia.org/wiki/Coordinated_Universal_Time}{Coordinated Universal Time (UCT)}.
 
-\item{to}{TODO: Should be optional. Default should be no filter.}
+For hourly charts, provide a character string in the format
+\code{"\%Y-\%m-\%d \%H:\%M:\%S"}. For example \code{"2022-06-20 06:00:00"}
+
+For daily charts, provide a character string in the format
+\code{"\%Y-\%m-\%d"}. For example \code{"2022-06-20"}
+
+For monthly charts, provide a character string in the format
+\code{"\%Y-\%m"}. For example \code{"2022-06"}}
+
+\item{to}{Optional parameter to subset the data to tweets that were created
+on or before the specified date and/or time in \href{https://en.wikipedia.org/wiki/Coordinated_Universal_Time}{Coordinated Universal Time (UCT)}.
+
+For hourly charts, provide a character string in the format
+\code{"\%Y-\%m-\%d \%H:\%M:\%S"}. For example \code{"2022-06-20 06:00:00"}
+
+For daily charts, provide a character string in the format
+\code{"\%Y-\%m-\%d"}. For example \code{"2022-06-20"}
+
+For monthly charts, provide a character string in the format
+\code{"\%Y-\%m"}. For example \code{"2022-06"}}
 }
 \value{
 ggplot2 plot.
@@ -25,14 +46,20 @@ ggplot2 plot.
 \description{
 Create a ggplot2 chart of the number of tweets per
 hour, day or month.
+
+Hourly and daily charts will be plotted as a line graph, and monthly charts
+will be plotted as a bar graph.
 }
 \examples{
 \dontrun{
 
 num_tweets_by_timeperiod(sqlite_con, period = "day", from = "2022-06-14",
   to = "2022-06-20")
+
 my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "hour",
   from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
+
+my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "hour")
 }
 
 }

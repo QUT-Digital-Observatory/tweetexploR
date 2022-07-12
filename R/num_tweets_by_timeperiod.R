@@ -9,17 +9,43 @@ utils::globalVariables(c("id",
 #' @description Create a ggplot2 chart of the number of tweets per
 #'   hour, day or month.
 #'
+#'   Hourly and daily charts will be plotted as a line graph, and monthly charts
+#'   will be plotted as a bar graph.
+#'
 #' @param sqlite_con [Class SQLiteConnection](https://rsqlite.r-dbi.org/reference/sqliteconnection-class)
 #'   object that is a connection to an SQLite .db file created by the
 #'   [tidy-tweet package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
 #'   The database contains a collection of tweets in relational tables. This can
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
-#' @param period can be "hour", "day", or "month". TODO: Default value?
+#' @param period Time period for which the tweet frequency will be calculated.
+#'   Accepted values are `"hour"`, `"day"`, or `"month"`. Defaults to `"day"`.
 #'
-#' @param from TODO: Should be optional. Default should be no filter.
+#' @param from Optional parameter to subset the data to tweets that were created
+#'   on or after the specified date and/or time in [Coordinated Universal Time
+#'   (UCT)](https://en.wikipedia.org/wiki/Coordinated_Universal_Time).
 #'
-#' @param to TODO: Should be optional. Default should be no filter.
+#'   For hourly charts, provide a character string in the format
+#'   `"%Y-%m-%d %H:%M:%S"`. For example `"2022-06-20 06:00:00"`
+#'
+#'   For daily charts, provide a character string in the format
+#'   `"%Y-%m-%d"`. For example `"2022-06-20"`
+#'
+#'   For monthly charts, provide a character string in the format
+#'   `"%Y-%m"`. For example `"2022-06"`
+#'
+#' @param to Optional parameter to subset the data to tweets that were created
+#'   on or before the specified date and/or time in [Coordinated Universal Time
+#'   (UCT)](https://en.wikipedia.org/wiki/Coordinated_Universal_Time).
+#'
+#'   For hourly charts, provide a character string in the format
+#'   `"%Y-%m-%d %H:%M:%S"`. For example `"2022-06-20 06:00:00"`
+#'
+#'   For daily charts, provide a character string in the format
+#'   `"%Y-%m-%d"`. For example `"2022-06-20"`
+#'
+#'   For monthly charts, provide a character string in the format
+#'   `"%Y-%m"`. For example `"2022-06"`
 #'
 #' @return ggplot2 plot.
 #'
@@ -28,8 +54,11 @@ utils::globalVariables(c("id",
 #'
 #' num_tweets_by_timeperiod(sqlite_con, period = "day", from = "2022-06-14",
 #'   to = "2022-06-20")
+#'
 #' my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "hour",
 #'   from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
+#'
+#' my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "hour")
 #' }
 #'
 #' @export
@@ -37,32 +66,43 @@ utils::globalVariables(c("id",
 
 num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
+  # Check if `period` is valid
+  check_for_valid_period(period)
+
+  # Check if `from` is valid
+  check_for_valid_subset_input(period, from)
+
+  # Check if `to` is valid
+  check_for_valid_subset_input(period, to)
+
+  # Plot the data (for hourly)
   if(period == "hour") {
-    DBI::dbGetQuery(sqlite_con,
-                    "SELECT id, datetime(created_at) as `created_at_datetime`
-                    FROM tweet;") %>%
-      dplyr::mutate(created_at_datetime = lubridate::ymd_hms(created_at_datetime)) %>%
-      dplyr::mutate(created_at_hour = lubridate::floor_date(created_at_datetime, unit = "hour")) %>%
-      dplyr::filter(created_at_hour >= lubridate::ymd_hms(from) & created_at_hour <= lubridate::ymd_hms(to)) %>%
-      dplyr::group_by(created_at_hour) %>%
-      dplyr::summarise(tweets = dplyr::n()) %>%
-      ggplot2::ggplot(ggplot2::aes(x = created_at_hour, y = tweets)) +
-      ggplot2::geom_line(group = 1) +
-      ggplot2::labs(title = "Number of tweets per hour",
-                    x = "Hour",
-                    y = "Number of tweets") +
-      configure_y_axis() +
-      configure_ggplot_theme()
+  DBI::dbGetQuery(sqlite_con,
+                  "SELECT id, datetime(created_at) as `created_at_datetime`
+                  FROM tweet;") %>%
+    dplyr::mutate(created_at_datetime = lubridate::ymd_hms(created_at_datetime)) %>%
+    dplyr::mutate(created_at_hour = lubridate::floor_date(created_at_datetime, unit = "hour")) %>%
+          dplyr::group_by(created_at_hour) %>%
+    dplyr::summarise(tweets = dplyr::n()) %>%
+    ggplot2::ggplot(ggplot2::aes(x = created_at_hour, y = tweets)) +
+    ggplot2::geom_line(group = 1) +
+    ggplot2::labs(title = "Number of tweets per hour",
+                  x = "Hour",
+                  y = "Number of tweets") +
+    configure_y_axis() +
+    configure_ggplot_theme()
   }
 
-  # if(period == "day") {
-  #   # TODO: CODE TO PLOT DAILY CHART
-  # }
-  #
-  # if(period == "month") {
-  #   # TODO: CODE TO PLOT MONTHLY CHART
-  # }
+  # Plot the data (for daily)
+  if(period == "day") {
+    print("daily plot not yet completed")
+  }
 
+  # Plot the data (for monthly)
+  if(period == "month") {
+    print("monthly plot not yet completed")
+  # Use lubridate::floor_date(ym(input), unit = "month")
+  }
 }
 
 
