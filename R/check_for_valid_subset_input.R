@@ -23,7 +23,24 @@ check_for_valid_subset_input <- function(period, input) {
   }
 
   else if(period == "day") {
-  # Check for valid `input`
+
+    tryCatch(
+
+      expr = {
+        if(typeof(lubridate::ymd(input)) == "double") {
+        }
+      },
+
+      error = function(e) {
+        print(e)
+      },
+
+      warning = function(w) {
+        print(w)
+        warning("lubridate::ymd() could not parse the input.\nEnsure it is in the format '%Y-%m-%d'.\nFor example: '2022-06-20'")
+      }
+    )
+
   }
 
   else if(period == "month") {
