@@ -11,8 +11,13 @@ check_for_valid_subset_input <- function(period, input) {
         }
       },
 
+      error = function(e) {
+        print(e)
+      },
+
       warning = function(w) {
-        message("lubridate::ymd_hms() could not parse the input.\nEnsure it is in the format '%Y-%m-%d %H:%M:%S'.\nFor example: '2022-06-20 06:00:00'")
+        print(w)
+        warning("lubridate::ymd_hms() could not parse the input.\nEnsure it is in the format '%Y-%m-%d %H:%M:%S'.\nFor example: '2022-06-20 06:00:00'")
       }
     )
   }
