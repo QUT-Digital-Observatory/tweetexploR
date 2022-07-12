@@ -8,8 +8,6 @@ check_for_valid_subset_input <- function(period, input) {
 
       expr = {
         if(typeof(lubridate::ymd_hms(input)) == "double") {
-          valid_period_subset <- TRUE
-          return(valid_period_subset)
         }
       },
 
