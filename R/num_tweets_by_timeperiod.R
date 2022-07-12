@@ -69,9 +69,17 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
   # Check if `period` is valid
   check_for_valid_period(period)
 
+  # If `from` is missing, substitute with a very old date
+  if(missing(from) == TRUE) {
+    from <- "0001-01-01 01:00:00"
+  }
   # Check if `from` is valid
   check_for_valid_subset_input(period, from)
 
+  # If `to` is missing, substitute with the current datetime
+  if(missing(to) == TRUE) {
+    to <- lubridate::now()
+  }
   # Check if `to` is valid
   check_for_valid_subset_input(period, to)
 
@@ -82,7 +90,8 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
                   FROM tweet;") %>%
     dplyr::mutate(created_at_datetime = lubridate::ymd_hms(created_at_datetime)) %>%
     dplyr::mutate(created_at_hour = lubridate::floor_date(created_at_datetime, unit = "hour")) %>%
-          dplyr::group_by(created_at_hour) %>%
+    dplyr::filter(created_at_hour >= lubridate::ymd_hms(from) & created_at_hour <= lubridate::ymd_hms(to)) %>%
+    dplyr::group_by(created_at_hour) %>%
     dplyr::summarise(tweets = dplyr::n()) %>%
     ggplot2::ggplot(ggplot2::aes(x = created_at_hour, y = tweets)) +
     ggplot2::geom_line(group = 1) +
@@ -94,12 +103,12 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
   }
 
   # Plot the data (for daily)
-  if(period == "day") {
+  else if(period == "day") {
     print("daily plot not yet completed")
   }
 
   # Plot the data (for monthly)
-  if(period == "month") {
+  else if(period == "month") {
     print("monthly plot not yet completed")
   # Use lubridate::floor_date(ym(input), unit = "month")
   }
