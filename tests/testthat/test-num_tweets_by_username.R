@@ -1,5 +1,13 @@
+# Connect to sqlite .db file
+sqlite_con <- connect_to_sqlite_db(test_path("fixtures", "auspol-test.db"))
+
+
 test_that("result is a ggplot2 object", {
-  sqlite_con <- tweetexploR::connect_to_sqlite_db(test_path("fixtures", "auspol-test.db"))
-  p <- tweetexploR::num_tweets_by_username(sqlite_con, 10)
-  expect_true(ggplot2::is.ggplot(p))
+  expect_true(ggplot2::is.ggplot(num_tweets_by_username(sqlite_con, 10)))
+})
+
+
+test_that("ggplot2 plot has expected output", {
+  vdiffr::expect_doppelganger("num_tweets_by_username_10",
+                              num_tweets_by_username(sqlite_con, 10))
 })
