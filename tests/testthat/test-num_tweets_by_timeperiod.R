@@ -33,5 +33,6 @@ test_that("ggplot2 plot has expected output (monthly plot)", {
                              num_tweets_by_timeperiod(sqlite_con, "month"))
 })
 
+
 # Disconnect from database
 DBI::dbDisconnect(sqlite_con)
