@@ -43,11 +43,11 @@
 #'
 #' @return ggplot2 plot.
 #'
-#' @importFrom ggplot2 ggplot aes geom_line labs
+#' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date
 #'
 #' @importFrom dplyr mutate filter group_by summarise n
 #'
-#' @importFrom lubridate now ymd_hms floor_date
+#' @importFrom lubridate now ymd_hms floor_date ymd
 #'
 #' @importFrom rlang .data
 #'
@@ -77,7 +77,15 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # If `from` is missing, substitute with a very old date
   if (missing(from) == TRUE) {
-    from <- "0001-01-01 01:00:00"
+    if (period == "hour") {
+      from <- "0001-01-01 01:00:00"
+    }
+    if (period == "day") {
+      from <- "0001-01-01"
+    }
+    if (period == "month") {
+      from <- "0001-01"
+    }
   }
 
   # Check if `from` is valid
@@ -85,7 +93,15 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # If `to` is missing, substitute with the current datetime
   if (missing(to) == TRUE) {
-    to <- now()
+    if (period == "hour") {
+      to <- now("UTC")
+    }
+    if (period == "day") {
+      to <- substr(now("UTC"), 1, 10)
+    }
+    if (period == "month") {
+      to <- substr(now("UTC"), 1, 7)
+    }
   }
 
   # Check if `to` is valid
@@ -112,7 +128,19 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # Plot the data (for daily)
   else if (period == "day") {
-    print("daily plot not yet completed")
+    DBI::dbGetQuery(sqlite_con,
+                    "SELECT count(*) as `tweets`, date(created_at) as `day`
+                    FROM tweet
+                    GROUP BY day;") %>%
+      filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
+      ggplot(aes(x = ymd(.data$day), y = .data$tweets)) +
+      geom_line(group = 1) +
+      labs(title = "Number of tweets per day",
+           x = "Day",
+           y = "Number of tweets") +
+      scale_x_date(date_labels = "%d/%m/%Y") +
+      configure_y_axis() +
+      configure_ggplot_theme()
   }
 
   # Plot the data (for monthly)
@@ -125,33 +153,10 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
 # ## Number of tweets per hour/day/month ####
 #
-# ### Hour ####
-#
-# # User supplied parameters
-# lower_limit <- "2022-06-20 06:00:00"
-# upper_limit <- "2022-06-21 00:00:00"
-#
-# # Plot
-# dbGetQuery(con,
-#            "SELECT id, datetime(created_at) as `created_at_datetime`
-#             FROM tweet;") %>%
-#   mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>%
-#   mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>%
-#   filter(created_at_hour >= ymd_hms(lower_limit) & created_at_hour <= ymd_hms(upper_limit)) %>%
-#   group_by(created_at_hour) %>%
-#   summarise(tweets = n()) %>%
-#   ggplot(aes(created_at_hour, tweets)) +
-#   geom_line(group = 1) +
-#   labs(title = "Number of tweets per hour",
-#        x = "Hour",
-#        y = "Number of tweets") +
-#   my_y_axis +
-#   my_theme
-#
 #
 # ### Day ####
 #
-# # User supplier parameters
+# # User supplied parameters
 # lower_limit <- "2022-06-14"
 # upper_limit <- "2022-06-20"
 #
