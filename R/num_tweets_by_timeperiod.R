@@ -152,12 +152,14 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
       mutate(month = floor_date(ymd(.data$day), "month")) %>%
       group_by(.data$month) %>%
       summarise(tweets = sum(.data$tweets)) %>%
-      filter(.data$month >= ymd(from) & .data$month <= ymd(to)) %>%
+      filter(
+       .data$month >= ymd(paste0(from, "-01")) &
+         .data$month <= ymd(paste0(to, "-01"))) %>%
       ggplot(aes(x = .data$month, y = .data$tweets)) +
       geom_col() +
       labs(title = "Number of tweets per month",
-           x = "Month",
-           y = "Number of tweets") +
+          x = "Month",
+          y = "Number of tweets") +
       scale_x_date(date_labels = "%b %Y") +
       configure_y_axis() +
       configure_ggplot_theme()
