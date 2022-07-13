@@ -67,7 +67,9 @@ utils::globalVariables(c("id",
 num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # Check if `period` is valid
-  check_for_valid_period(period)
+  stopifnot("Please provide a valid value for `period`.
+            Accepted values are \"day\", \"hour\", or \"month\"."
+            = period %in% c("hour", "day", "month"))
 
   # If `from` is missing, substitute with a very old date
   if(missing(from) == TRUE) {
