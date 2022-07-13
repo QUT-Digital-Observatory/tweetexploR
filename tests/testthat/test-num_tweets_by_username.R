@@ -12,5 +12,6 @@ test_that("ggplot2 plot has expected output", {
                               num_tweets_by_username(sqlite_con, 10))
 })
 
+
 # Disconnect from database
 DBI::dbDisconnect(sqlite_con)
