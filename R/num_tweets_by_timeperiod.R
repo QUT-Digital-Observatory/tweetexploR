@@ -49,6 +49,12 @@ utils::globalVariables(c("id",
 #'
 #' @return ggplot2 plot.
 #'
+#' @importFrom ggplot2 ggplot aes geom_line labs
+#'
+#' @importFrom dplyr mutate filter group_by summarise n
+#'
+#' @importFrom lubridate now ymd_hms floor_date
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -83,7 +89,7 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # If `to` is missing, substitute with the current datetime
   if (missing(to) == TRUE) {
-    to <- lubridate::now()
+    to <- now()
   }
 
   # Check if `to` is valid
@@ -94,19 +100,16 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
     DBI::dbGetQuery(sqlite_con,
                     "SELECT id, datetime(created_at) as `created_at_datetime`
                     FROM tweet;") %>%
-      dplyr::mutate(created_at_datetime = lubridate::ymd_hms(created_at_datetime)) %>%
-      dplyr::mutate(created_at_hour = lubridate::floor_date(created_at_datetime, unit = "hour")) %>%
-      dplyr::filter(
-        created_at_hour >= lubridate::ymd_hms(from) &
-          created_at_hour <= lubridate::ymd_hms(to)
-      ) %>%
-      dplyr::group_by(created_at_hour) %>%
-      dplyr::summarise(tweets = dplyr::n()) %>%
-      ggplot2::ggplot(ggplot2::aes(x = created_at_hour, y = tweets)) +
-      ggplot2::geom_line(group = 1) +
-      ggplot2::labs(title = "Number of tweets per hour",
-                    x = "Hour",
-                    y = "Number of tweets") +
+      mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>%
+      mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>%
+      filter(created_at_hour >= ymd_hms(from) & created_at_hour <= ymd_hms(to)) %>%
+      group_by(created_at_hour) %>%
+      summarise(tweets = n()) %>%
+      ggplot(aes(x = created_at_hour, y = tweets)) +
+      geom_line(group = 1) +
+      labs(title = "Number of tweets per hour",
+           x = "Hour",
+           y = "Number of tweets") +
       configure_y_axis() +
       configure_ggplot_theme()
   }
