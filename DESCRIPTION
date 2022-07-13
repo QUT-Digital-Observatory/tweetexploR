@@ -22,4 +22,5 @@ Imports:
     ggplot2,
     scales,
     dplyr,
-    lubridate
+    lubridate,
+    rlang

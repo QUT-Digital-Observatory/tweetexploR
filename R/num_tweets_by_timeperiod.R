@@ -1,9 +1,3 @@
-utils::globalVariables(c("id",
-                         "created_at_datetime",
-                         "created_at_hour",
-                         "tweets",
-                         "n"))
-
 #' Plot number of tweets per hour, day, or month
 #'
 #' @description Create a ggplot2 chart of the number of tweets per
@@ -55,6 +49,8 @@ utils::globalVariables(c("id",
 #'
 #' @importFrom lubridate now ymd_hms floor_date
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -100,12 +96,12 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
     DBI::dbGetQuery(sqlite_con,
                     "SELECT id, datetime(created_at) as `created_at_datetime`
                     FROM tweet;") %>%
-      mutate(created_at_datetime = ymd_hms(created_at_datetime)) %>%
-      mutate(created_at_hour = floor_date(created_at_datetime, unit = "hour")) %>%
-      filter(created_at_hour >= ymd_hms(from) & created_at_hour <= ymd_hms(to)) %>%
-      group_by(created_at_hour) %>%
+      mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
+      mutate(created_at_hour = floor_date(.data$created_at_datetime, unit = "hour")) %>%
+      filter(.data$created_at_hour >= ymd_hms(from) & .data$created_at_hour <= ymd_hms(to)) %>%
+      group_by(.data$created_at_hour) %>%
       summarise(tweets = n()) %>%
-      ggplot(aes(x = created_at_hour, y = tweets)) +
+      ggplot(aes(x = .data$created_at_hour, y = .data$tweets)) +
       geom_line(group = 1) +
       labs(title = "Number of tweets per hour",
            x = "Hour",
