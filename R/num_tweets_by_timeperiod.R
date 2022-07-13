@@ -43,7 +43,7 @@
 #'
 #' @return ggplot2 plot.
 #'
-#' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date
+#' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date geom_col
 #'
 #' @importFrom dplyr mutate filter group_by summarise n
 #'
@@ -145,58 +145,21 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # Plot the data (for monthly)
   else if (period == "month") {
-    print("monthly plot not yet completed")
-    # Use lubridate::floor_date(ym(input), unit = "month")
+    DBI::dbGetQuery(sqlite_con,
+                    "SELECT count(*) as `tweets`, date(created_at) as `day`
+                    FROM tweet
+                    GROUP BY day;") %>%
+      mutate(month = floor_date(ymd(.data$day), "month")) %>%
+      group_by(.data$month) %>%
+      summarise(tweets = sum(.data$tweets)) %>%
+      filter(.data$month >= ymd(from) & .data$month <= ymd(to)) %>%
+      ggplot(aes(x = .data$month, y = .data$tweets)) +
+      geom_col() +
+      labs(title = "Number of tweets per month",
+           x = "Month",
+           y = "Number of tweets") +
+      scale_x_date(date_labels = "%b %Y") +
+      configure_y_axis() +
+      configure_ggplot_theme()
   }
 }
-
-
-# ## Number of tweets per hour/day/month ####
-#
-#
-# ### Day ####
-#
-# # User supplied parameters
-# lower_limit <- "2022-06-14"
-# upper_limit <- "2022-06-20"
-#
-# # Plot
-# dbGetQuery(con,
-#            "SELECT count(*) as `tweets`, date(created_at) as `day`
-#             FROM tweet
-#             GROUP BY day;") %>%
-#   filter(day >= ymd(lower_limit) & day <= ymd(upper_limit)) %>%
-#   ggplot(aes(ymd(day), tweets)) +
-#   geom_line(group = 1) +
-#   labs(title = "Number of tweets per day",
-#        x = "Day",
-#        y = "Number of tweets") +
-#   scale_x_date(date_labels = "%d/%m/%Y") +
-#   my_y_axis +
-#   my_theme
-#
-#
-# ### Month ####
-#
-# # User supplied parameters
-# # Must be the first of the month
-# lower_limit <- "2022-05-01"
-# upper_limit <- "2022-06-01"
-#
-# # Plot
-# dbGetQuery(con,
-#            "SELECT count(*) as `tweets`, date(created_at) as `day`
-#             FROM tweet
-#             GROUP BY day;") %>%
-#   mutate(month = floor_date(ymd(day), "month")) %>%
-#   group_by(month) %>%
-#   summarise(tweets = sum(tweets)) %>%
-#   filter(month >= ymd(lower_limit) & month <= ymd(upper_limit)) %>%
-#   ggplot(aes(month, tweets)) +
-#   geom_col() +
-#   labs(title = "Number of tweets per month",
-#        x = "Month",
-#        y = "Number of tweets") +
-#   scale_x_date(date_labels = "%b %Y") +
-#   my_y_axis +
-#   my_theme
