@@ -34,6 +34,8 @@
 # Possibly can be achieved with 'pass the dots'?
 
 ## Ability for user to export data frame and/or ggplot ####
+# Possibly can access data from the ggplot object
+# Build a wrapper for ggsave, or just allow people to use ggsave themselves?
 
 ## Ability for user to include/exclude retweets ####
 
