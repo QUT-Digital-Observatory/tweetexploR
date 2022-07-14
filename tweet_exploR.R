@@ -407,36 +407,3 @@ dbGetQuery(con,
             WHERE source_type = 'tweet'
               AND field = 'text';")
 # Need to figure out why the same url appears several times within the same tweet_id
-
-
-# IDEAS FOR VISUALISATIONS ####
-
-## Top n accounts being retweeted ####
-# Regex to detect retweet in tweet text: "^RT"
-# Can also use tweet.retweeted_tweet_id is not null
-
-## Engagement metric summary ####
-# Retweets, likes, replies, etc. in either a table or a graph of some sort?
-
-
-# IDEAS FOR FUNCTIONALITY/FEATURES ####
-
-## Ability for user to specify geom_col() or geom_line() ####
-
-## Ability for user to export data frame and/or ggplot ####
-
-## Ability for user to include/exclude retweets ####
-
-## Ability for user to change colour of lines/bars in plots ####
-
-
-# NOTES FOR DOCUMENTATION ####
-
-## Include recommended values for n for each visualisation ####
-
-## Include recommended time periods for the hourly/daily/monthly visualisations ####
-
-## Possibly include a sample .sql file for distribution with the package ####
-
-
-# TODO: Disconnect from database? But when?
