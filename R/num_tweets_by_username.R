@@ -1,5 +1,3 @@
-utils::globalVariables(c("tweet_count", "username"))
-
 #' Plot number of tweets for top n usernames
 #'
 #' @description Create a ggplot2 bar chart of the number of tweets per username
@@ -27,14 +25,14 @@ utils::globalVariables(c("tweet_count", "username"))
 num_tweets_by_username <- function(sqlite_con, n) {
   DBI::dbGetQuery(sqlite_con,
                   "SELECT count(*) as `tweet_count`, username
-    FROM tweet
-    LEFT JOIN (
-      SELECT username, id
-      FROM user ) user
-    ON user.id = tweet.author_id
-    GROUP BY username;") %>%
-    dplyr::slice_max(n = n, order_by = tweet_count, with_ties = TRUE) %>%
-    ggplot2::ggplot(ggplot2::aes(x = stats::reorder(username, tweet_count), y = tweet_count)) +
+                  FROM tweet
+                  LEFT JOIN (
+                    SELECT username, id
+                    FROM user ) user
+                  ON user.id = tweet.author_id
+                  GROUP BY username;") %>%
+    dplyr::slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
+    ggplot2::ggplot(ggplot2::aes(x = stats::reorder(.data$username, .data$tweet_count), y = .data$tweet_count)) +
     ggplot2::geom_col() +
     ggplot2::labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
                   y = "Number of tweets") +
