@@ -69,23 +69,11 @@
 num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # Check if `period` is valid
-  stopifnot(
-    "Please provide a valid value for `period`.
-    Accepted values are \"day\", \"hour\", or \"month\"."
-    = period %in% c("hour", "day", "month")
-  )
+  check_if_period_is_valid(period)
 
   # If `from` is missing, substitute with a very old date
   if (missing(from) == TRUE) {
-    if (period == "hour") {
-      from <- "0001-01-01 01:00:00"
-    }
-    if (period == "day") {
-      from <- "0001-01-01"
-    }
-    if (period == "month") {
-      from <- "0001-01"
-    }
+    from <- substitute_missing_from_input(period)
   }
 
   # Check if `from` is valid
@@ -93,15 +81,7 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # If `to` is missing, substitute with the current datetime
   if (missing(to) == TRUE) {
-    if (period == "hour") {
-      to <- now("UTC")
-    }
-    if (period == "day") {
-      to <- substr(now("UTC"), 1, 10)
-    }
-    if (period == "month") {
-      to <- substr(now("UTC"), 1, 7)
-    }
+    to <- substitute_missing_to_input(period)
   }
 
   # Check if `to` is valid
