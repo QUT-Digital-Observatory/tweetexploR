@@ -47,7 +47,7 @@
 #'
 #' @importFrom dplyr mutate filter group_by summarise n
 #'
-#' @importFrom lubridate now ymd_hms floor_date ymd
+#' @importFrom lubridate ymd_hms floor_date ymd
 #'
 #' @importFrom rlang .data
 #'
