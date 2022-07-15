@@ -24,4 +24,5 @@ Imports:
     scales,
     dplyr,
     lubridate,
-    rlang
+    rlang,
+    stringr
