@@ -90,8 +90,10 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
                     "SELECT author_id, datetime(created_at) as `created_at_datetime`
                     FROM tweet;") %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
-      mutate(created_at_hour = floor_date(.data$created_at_datetime, unit = "hour")) %>%
-      filter(.data$created_at_hour >= ymd_hms(from) & .data$created_at_hour <= ymd_hms(to)) %>%
+      mutate(created_at_hour =
+               floor_date(.data$created_at_datetime, unit = "hour")) %>%
+      filter(.data$created_at_hour >= ymd_hms(from) &
+               .data$created_at_hour <= ymd_hms(to)) %>%
       group_by(.data$created_at_hour) %>%
       summarise(accounts = n_distinct(.data$author_id)) %>%
       ggplot(aes(x = .data$created_at_hour, y = .data$accounts)) +
@@ -101,16 +103,15 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
            y = "Number of accounts") +
       configure_y_axis() +
       configure_ggplot_theme()
-    print("hourly chart not ready yet")
   }
 
   # Plot the data (for daily)
-  if (period == "day") {
+  else if (period == "day") {
     print("daily chart not ready yet")
   }
 
   # Plot the data (for monthly)
-  if (period == "month") {
+  else if (period == "month") {
     print("monthly chart not ready yet")
   }
 }
