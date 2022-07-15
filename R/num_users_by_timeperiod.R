@@ -47,7 +47,7 @@
 #'
 #' @importFrom lubridate ymd_hms floor_date ymd
 #'
-#' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date
+#' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date geom_col
 #'
 #' @importFrom rlang .data
 #'
@@ -57,7 +57,13 @@
 #' num_users_by_timeperiod(sqlite_con, period = "hour",
 #' from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
 #'
-#' # TODO: More examples
+#' num_users_by_timeperiod(sqlite_con, period = "day",
+#' from = "2022-06-20")
+#'
+#' my_plot <- num_users_by_timeperiod(sqlite_con, period = "day",
+#' to = "2022-06-30")
+#'
+#' my_plot <- num_users_by_timeperiod(sqlite_con, period = "month")
 #'
 #' }
 #'
@@ -124,6 +130,23 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # Plot the data (for monthly)
   else if (period == "month") {
-    print("monthly chart not ready yet")
+    DBI::dbGetQuery(sqlite_con,
+    "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
+    FROM tweet
+    GROUP BY day;") %>%
+      mutate(month = floor_date(ymd(.data$day), "month")) %>%
+      group_by(.data$month) %>%
+      summarise(accounts = sum(.data$accounts)) %>%
+      filter(.data$month >= ymd(paste0(from, "-01")) &
+               .data$month <= ymd(paste0(to, "-01"))) %>%
+      ggplot(aes(x = .data$month, y = .data$accounts)) +
+      geom_col() +
+      labs(title = "Number of unique accounts that tweeted per month",
+           x = "Month",
+           y = "Number of accounts") +
+      scale_x_date(date_labels = "%b %Y") +
+      configure_y_axis() +
+      configure_ggplot_theme()
   }
+
 }
