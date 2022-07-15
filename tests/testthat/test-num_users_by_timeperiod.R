@@ -7,11 +7,11 @@ test_that("result is a ggplot2 object (hourly plot)", {
 })
 
 
-# test_that("result is a ggplot2 object (daily plot)", {
-#   expect_true(ggplot2::is.ggplot(num_users_by_timeperiod(sqlite_con, "day")))
-# })
-#
-#
+test_that("result is a ggplot2 object (daily plot)", {
+  expect_true(ggplot2::is.ggplot(num_users_by_timeperiod(sqlite_con, "day")))
+})
+
+
 # test_that("result is a ggplot2 object (monthly plot)", {
 #   expect_true(ggplot2::is.ggplot(num_users_by_timeperiod(sqlite_con, "month")))
 # })
@@ -23,12 +23,12 @@ test_that("ggplot2 plot has expected output (hourly plot)", {
 })
 
 
-# test_that("ggplot2 plot has expected output (daily plot)", {
-#   vdiffr::expect_doppelganger("num_users_by_timeperiod_day",
-#                               num_users_by_timeperiod(sqlite_con, "day"))
-# })
-#
-#
+test_that("ggplot2 plot has expected output (daily plot)", {
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_day",
+                              num_users_by_timeperiod(sqlite_con, "day"))
+})
+
+
 # test_that("ggplot2 plot has expected output (monthly plot)", {
 #   vdiffr::expect_doppelganger("num_users_by_timeperiod_month",
 #                               num_users_by_timeperiod(sqlite_con, "month"))

@@ -45,9 +45,9 @@
 #'
 #' @importFrom dplyr mutate filter n_distinct group_by summarise
 #'
-#' @importFrom lubridate ymd_hms floor_date
+#' @importFrom lubridate ymd_hms floor_date ymd
 #'
-#' @importFrom ggplot2 ggplot aes geom_line labs
+#' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date
 #'
 #' @importFrom rlang .data
 #'
@@ -87,8 +87,8 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
   # Plot the data (for hourly)
   if (period == "hour") {
     DBI::dbGetQuery(sqlite_con,
-                    "SELECT author_id, datetime(created_at) as `created_at_datetime`
-                    FROM tweet;") %>%
+      "SELECT author_id, datetime(created_at) as `created_at_datetime`
+      FROM tweet;") %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
       mutate(created_at_hour =
                floor_date(.data$created_at_datetime, unit = "hour")) %>%
@@ -107,7 +107,19 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
 
   # Plot the data (for daily)
   else if (period == "day") {
-    print("daily chart not ready yet")
+    DBI::dbGetQuery(sqlite_con,
+    "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
+    FROM tweet
+    GROUP BY day;") %>%
+      filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
+      ggplot(aes(x = ymd(.data$day), y = .data$accounts)) +
+      geom_line(group = 1) +
+      labs(title = "Number of unique accounts that tweeted per day",
+           x = "Day",
+           y = "Number of accounts") +
+      scale_x_date(date_labels = "%d/%m/%Y") +
+      configure_y_axis() +
+      configure_ggplot_theme()
   }
 
   # Plot the data (for monthly)
