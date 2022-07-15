@@ -32,12 +32,21 @@ connect_to_sqlite_db <- function(sqlite_file) {
   # Make connection to database
   sqlite_con <- DBI::dbConnect(RSQLite::SQLite(), sqlite_file)
 
-  # Check that there are tweets in the database
-  number_of_tweets <- DBI::dbGetQuery(sqlite_con, "SELECT count(*) FROM tweet;")
-
-  # Display number of tweets to the user
-  cat("There are", number_of_tweets[[1]], "tweets in the database. Happy exploRing!")
-
-  return(sqlite_con)
+  # Find out if there are tweets in the database
+  tryCatch(
+    expr = {
+      number_of_tweets <-
+        DBI::dbGetQuery(sqlite_con, "SELECT count(*) FROM tweet;")
+      # Tell the user how many tweets are in the database
+      cat("There are",
+          number_of_tweets[[1]],
+          "tweets in the database. Happy exploRing!")
+      return(sqlite_con)
+    },
+    error = function(e) {
+      # Tell the user that there are no tweets in the database
+      message("There are no tweets in the database.")
+    }
+  )
 
 }
