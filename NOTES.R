@@ -9,13 +9,7 @@
 
 # IDEAS FOR TESTS ####
 
-## db file exists ####
-# Test that .db file exists before connecting to it, otherwise an empty .db is
-# created and there's no error message.
-
-## Results of a known query ####
-# Add test to see if a .db can be queried (e.g., count(*)) and that results are
-# as expected.
+## No ideas at the moment! ####
 
 
 # IDEAS FOR VISUALISATIONS ####
