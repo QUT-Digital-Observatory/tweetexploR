@@ -39,8 +39,8 @@ connect_to_sqlite_db <- function(sqlite_file) {
         DBI::dbGetQuery(sqlite_con, "SELECT count(*) FROM tweet;")
       # Tell the user how many tweets are in the database
       cat("There are",
-          number_of_tweets[[1]],
-          "tweets in the database. Happy exploRing!")
+          format(number_of_tweets[[1]], big.mark = ","),
+          "tweets in the database. \nHappy exploRing!")
       return(sqlite_con)
     },
     error = function(e) {
