@@ -8,8 +8,14 @@ test_that("result is a ggplot2 object", {
 
 
 test_that("ggplot2 plot has expected output", {
-  vdiffr::expect_doppelganger("top_n_retweets_10",
-                              top_n_retweets(sqlite_con, 10))
+  vdiffr::expect_doppelganger("top_n_retweets_10_metrics_false",
+                              top_n_retweets(sqlite_con, 10, metrics = FALSE))
+})
+
+
+test_that("ggplot2 plot has expected output", {
+  vdiffr::expect_doppelganger("top_n_retweets_10_metrics_true",
+                              top_n_retweets(sqlite_con, 10, metrics = TRUE))
 })
 
 

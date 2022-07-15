@@ -23,7 +23,7 @@
 #'
 #' @return ggplot2 plot.
 #'
-#' @importFrom dplyr slice_max
+#' @importFrom dplyr slice_max distinct
 #'
 #' @importFrom ggplot2 aes geom_col labs scale_x_discrete theme
 #'
@@ -62,45 +62,21 @@ top_n_retweets <- function(sqlite_con, n, metrics = FALSE, tweet_chars = 80,
   }
 
   else if (metrics == TRUE) {
-    # Plot based on Twitter metrics
+    DBI::dbGetQuery(sqlite_con,
+    "SELECT retweet_count, text
+    FROM tweet;") %>%
+      distinct() %>%
+      slice_max(n = n, order_by = .data$retweet_count, with_ties = TRUE) %>%
+      ggplot(aes(x = reorder(substr(.data$text, 1, tweet_chars),
+                             .data$retweet_count), .data$retweet_count)) +
+      geom_col() +
+      labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
+           y = "Number of retweets") +
+      scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +
+      configure_y_axis() +
+      ggplot2::coord_flip() +
+      configure_ggplot_theme() +
+      theme(axis.title.y = ggplot2::element_blank())
   }
 
 }
-
-## Top n retweeted tweets ####
-
-### Based on number of retweets inside the tweets that were collected ####
-
-# dbGetQuery(con,
-#            "SELECT retweeted_tweet_id, count(*) as `retweets`, text
-#             FROM tweet
-#             WHERE retweeted_tweet_id IS NOT NULL
-#             GROUP BY retweeted_tweet_id;") %>%
-#   slice_max(n = n, order_by = retweets, with_ties = TRUE) %>%
-#   ggplot(aes(reorder(substr(text, 1, tweet_chars), retweets), retweets)) +
-#   geom_col() +
-#   labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
-#        y = "Number of retweets") +
-#   scale_x_discrete(labels = label_wrap(chars_per_line))+
-#   my_y_axis +
-#   coord_flip() +
-#   my_theme +
-#   theme(axis.title.y = element_blank())
-
-
-### Based on tweet.retweet_count (Twitter metrics) ####
-
-# dbGetQuery(con,
-#            "SELECT retweet_count, text
-#             FROM tweet;") %>%
-#   distinct() %>%
-#   slice_max(n = n, order_by = retweet_count, with_ties = TRUE) %>%
-#   ggplot(aes(reorder(substr(text, 1, tweet_chars), retweet_count), retweet_count)) +
-#   geom_col() +
-#   labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
-#        y = "Number of retweets") +
-#   scale_x_discrete(labels = label_wrap(chars_per_line)) +
-#   my_y_axis +
-#   coord_flip() +
-#   my_theme +
-#   theme(axis.title.y = element_blank())
