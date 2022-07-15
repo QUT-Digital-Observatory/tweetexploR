@@ -61,6 +61,10 @@
 #'   from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
 #'
 #' my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "hour")
+#'
+#' my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "month",
+#'   from = "2022-06")
+#'
 #' }
 #'
 #' @export

@@ -64,6 +64,9 @@ to = "2022-06-30")
 
 my_plot <- num_users_by_timeperiod(sqlite_con, period = "month")
 
+my_plot <- num_users_by_timeperiod(sqlite_con, period = "month",
+  to = "2022-07")
+
 }
 
 }
