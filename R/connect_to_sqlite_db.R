@@ -23,6 +23,21 @@
 #' }
 #'
 #' @export
+
 connect_to_sqlite_db <- function(sqlite_file) {
+
+  # Check that filename ends in .db
+  stopifnot("Path must end in .db" = tools::file_ext(sqlite_file) == "db")
+
+  # Make connection to database
   sqlite_con <- DBI::dbConnect(RSQLite::SQLite(), sqlite_file)
+
+  # Check that there are tweets in the database
+  number_of_tweets <- DBI::dbGetQuery(sqlite_con, "SELECT count(*) FROM tweet;")
+
+  # Display number of tweets to the user
+  cat("There are", number_of_tweets[[1]], "tweets in the database. Happy exploRing!")
+
+  return(sqlite_con)
+
 }
