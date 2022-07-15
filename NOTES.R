@@ -24,6 +24,13 @@
 
 # IDEAS FOR FUNCTIONALITY/FEATURES ####
 
+## Default values for n ####
+# Set default value for n to be 10 for the following functions
+#  top_n_hashtags
+#  top_n_mentions
+#  top_n_retweets
+#  num_tweets_by_usernames
+
 ## Ability for user to specify geom_col() or geom_line() ####
 # Possibly can be achieved with 'pass the dots'?
 
