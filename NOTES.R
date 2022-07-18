@@ -6,6 +6,8 @@
 #  num_tweets_by_timeperiod()
 #  num_users_by_timeperiod()
 
+## Specifying minimum versions of packages ####
+
 
 # IDEAS FOR TESTS ####
 
