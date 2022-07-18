@@ -10,6 +10,7 @@
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
 #' @param n Number of retweets to be plotted. Note, ties will be included.
+#'   Default value is 10.
 #'
 #' @param metrics Should Twitter metrics be used to calculate the number of
 #'   times each tweet was retweeted? The default, `FALSE`, calculates the number
@@ -40,8 +41,8 @@
 #'
 #' @export
 
-top_n_retweets <- function(sqlite_con, n, metrics = FALSE, tweet_chars = 80,
-                           chars_per_line = 50) {
+top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
+                           tweet_chars = 80, chars_per_line = 50) {
   if (metrics == FALSE) {
     DBI::dbGetQuery(sqlite_con,
     "SELECT retweeted_tweet_id, count(*) as `retweets`, text

@@ -10,6 +10,7 @@
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
 #' @param n Number of usernames to be plotted. Note, ties will be included.
+#'   Default value is 10.
 #'
 #' @return ggplot2 plot.
 #'
@@ -22,7 +23,7 @@
 #'
 #' @export
 # Number of tweets by username (top n usernames)
-num_tweets_by_username <- function(sqlite_con, n) {
+num_tweets_by_username <- function(sqlite_con, n = 10) {
   DBI::dbGetQuery(sqlite_con,
                   "SELECT count(*) as `tweet_count`, username
                   FROM tweet

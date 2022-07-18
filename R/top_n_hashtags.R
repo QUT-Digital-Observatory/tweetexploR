@@ -10,6 +10,7 @@
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
 #' @param n Number of hashtags to be plotted. Note, ties will be included.
+#'   Default value is 10.
 #'
 #' @return ggplot2 plot.
 #'
@@ -33,7 +34,7 @@
 #'
 #' @export
 
-top_n_hashtags <- function(sqlite_con, n) {
+top_n_hashtags <- function(sqlite_con, n = 10) {
   DBI::dbGetQuery(sqlite_con,
   "SELECT tag, source_id
   FROM hashtag

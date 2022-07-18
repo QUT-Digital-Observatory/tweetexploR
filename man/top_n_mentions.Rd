@@ -4,7 +4,7 @@
 \alias{top_n_mentions}
 \title{Plot top n account mentions}
 \usage{
-top_n_mentions(sqlite_con, n)
+top_n_mentions(sqlite_con, n = 10)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -13,7 +13,8 @@ object that is a connection to an SQLite .db file created by the
 The database contains a collection of tweets in relational tables. This can
 be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
-\item{n}{Number of accounts to be plotted. Note, ties will be included.}
+\item{n}{Number of accounts to be plotted. Note, ties will be included.
+Default value is 10.}
 }
 \value{
 ggplot2 plot.

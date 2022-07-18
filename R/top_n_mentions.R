@@ -11,6 +11,7 @@
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
 #' @param n Number of accounts to be plotted. Note, ties will be included.
+#'   Default value is 10.
 #'
 #' @return ggplot2 plot.
 #'
@@ -34,7 +35,7 @@
 #'
 #' @export
 
-top_n_mentions <- function(sqlite_con, n) {
+top_n_mentions <- function(sqlite_con, n = 10) {
   DBI::dbGetQuery(sqlite_con,
   "SELECT username, source_id
   FROM mention

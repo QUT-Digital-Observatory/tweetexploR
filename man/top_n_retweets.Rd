@@ -6,7 +6,7 @@
 \usage{
 top_n_retweets(
   sqlite_con,
-  n,
+  n = 10,
   metrics = FALSE,
   tweet_chars = 80,
   chars_per_line = 50
@@ -19,7 +19,8 @@ object that is a connection to an SQLite .db file created by the
 The database contains a collection of tweets in relational tables. This can
 be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
-\item{n}{Number of retweets to be plotted. Note, ties will be included.}
+\item{n}{Number of retweets to be plotted. Note, ties will be included.
+Default value is 10.}
 
 \item{metrics}{Should Twitter metrics be used to calculate the number of
 times each tweet was retweeted? The default, \code{FALSE}, calculates the number
