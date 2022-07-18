@@ -21,7 +21,7 @@
 #'
 #' @importFrom dplyr slice_max
 #'
-#' @importFrom ggplot2 geom_col labs scale_x_discrete theme
+#' @importFrom ggplot2 ggplot geom_col labs scale_x_discrete theme
 #'
 #' @importFrom rlang .data
 #'
