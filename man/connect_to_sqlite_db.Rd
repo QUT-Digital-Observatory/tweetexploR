@@ -28,7 +28,9 @@ functions.
 \dontrun{
 
 sqlite_con <- connect_to_sqlite_db("my_database.db")
+
 sqlite_con <- connect_to_sqlite_db("my_subfolder\\\\my_database.db")
+
 }
 
 }

@@ -30,6 +30,7 @@
 #' my_plot <- num_tweets_by_username(sqlite_con, 20)
 #'
 #' num_tweets_by_username(sqlite_con, fill = "blue")
+#'
 #' }
 #'
 #' @export

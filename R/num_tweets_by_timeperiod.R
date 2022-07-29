@@ -104,8 +104,10 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
                     "SELECT id, datetime(created_at) as `created_at_datetime`
                     FROM tweet;") %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
-      mutate(created_at_hour = floor_date(.data$created_at_datetime, unit = "hour")) %>%
-      filter(.data$created_at_hour >= ymd_hms(from) & .data$created_at_hour <= ymd_hms(to)) %>%
+      mutate(created_at_hour = floor_date(.data$created_at_datetime,
+                                          unit = "hour")) %>%
+      filter(.data$created_at_hour >= ymd_hms(from) &
+               .data$created_at_hour <= ymd_hms(to)) %>%
       group_by(.data$created_at_hour) %>%
       summarise(tweets = n()) %>%
       ggplot(aes(x = .data$created_at_hour, y = .data$tweets)) +
