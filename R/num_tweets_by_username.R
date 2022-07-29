@@ -16,6 +16,12 @@
 #'
 #' @return ggplot2 plot.
 #'
+#' @importFrom dplyr slice_max
+#'
+#' @importFrom ggplot2 ggplot aes geom_col labs theme element_blank coord_flip
+#'
+#' @importFrom stats reorder
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -27,7 +33,7 @@
 #' }
 #'
 #' @export
-# Number of tweets by username (top n usernames)
+
 num_tweets_by_username <- function(sqlite_con, n = 10, ...) {
   DBI::dbGetQuery(sqlite_con,
                   "SELECT count(*) as `tweet_count`, username
@@ -37,13 +43,14 @@ num_tweets_by_username <- function(sqlite_con, n = 10, ...) {
                     FROM user ) user
                   ON user.id = tweet.author_id
                   GROUP BY username;") %>%
-    dplyr::slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
-    ggplot2::ggplot(ggplot2::aes(x = stats::reorder(.data$username, .data$tweet_count), y = .data$tweet_count)) +
-    ggplot2::geom_col(...) +
-    ggplot2::labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
-                  y = "Number of tweets") +
-    ggplot2::coord_flip() +
+    slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
+    ggplot(aes(x = reorder(.data$username, .data$tweet_count),
+               y = .data$tweet_count)) +
+    geom_col(...) +
+    labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
+         y = "Number of tweets") +
+    coord_flip() +
     configure_y_axis() +
     configure_ggplot_theme() +
-    ggplot2::theme(axis.title.y = ggplot2::element_blank())
+    theme(axis.title.y = element_blank())
 }

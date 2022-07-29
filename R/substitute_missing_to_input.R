@@ -15,16 +15,18 @@
 #'
 #'   For monthly charts, provide a character string in the format
 #'   `"%Y-%m"`. For example `"2022-06"`
+#'
+#' @importFrom lubridate now
 
 substitute_missing_to_input <- function(period) {
   if (period == "hour") {
-    to <- lubridate::now("UTC")
+    to <- now("UTC")
   }
   if (period == "day") {
-    to <- substr(lubridate::now("UTC"), 1, 10)
+    to <- substr(now("UTC"), 1, 10)
   }
   if (period == "month") {
-    to <- substr(lubridate::now("UTC"), 1, 7)
+    to <- substr(now("UTC"), 1, 7)
   }
   return(to)
 }

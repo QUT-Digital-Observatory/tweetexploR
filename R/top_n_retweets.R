@@ -28,11 +28,14 @@
 #'
 #' @importFrom dplyr slice_max distinct
 #'
-#' @importFrom ggplot2 aes geom_col labs scale_x_discrete theme
+#' @importFrom ggplot2 aes geom_col labs scale_x_discrete theme coord_flip
+#'   element_blank
 #'
 #' @importFrom rlang .data
 #'
 #' @importFrom stats reorder
+#'
+#' @importFrom scales label_wrap
 #'
 #' @examples
 #' \dontrun{
@@ -47,6 +50,7 @@
 
 top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
                            tweet_chars = 80, chars_per_line = 50, ...) {
+
   if (metrics == FALSE) {
     DBI::dbGetQuery(sqlite_con,
     "SELECT retweeted_tweet_id, count(*) as `retweets`, text
@@ -59,11 +63,11 @@ top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
       geom_col(...) +
       labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
            y = "Number of retweets") +
-      scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +
+      scale_x_discrete(labels = label_wrap(chars_per_line)) +
       configure_y_axis() +
-      ggplot2::coord_flip() +
+      coord_flip() +
       configure_ggplot_theme() +
-      theme(axis.title.y = ggplot2::element_blank())
+      theme(axis.title.y = element_blank())
   }
 
   else if (metrics == TRUE) {

@@ -19,7 +19,7 @@
 #'
 #' @importFrom dplyr mutate rename group_by summarise n slice_max
 #'
-#' @importFrom ggplot2 ggplot aes geom_col labs theme
+#' @importFrom ggplot2 ggplot aes geom_col labs theme coord_flip element_blank
 #'
 #' @importFrom stringr str_to_lower
 #'
@@ -55,7 +55,7 @@ top_n_mentions <- function(sqlite_con, n = 10, ...) {
     labs(title = paste0("Top ", n, " accounts mentioned in tweets"),
          y = "Number of tweets") +
     configure_y_axis() +
-    ggplot2::coord_flip() +
+    coord_flip() +
     configure_ggplot_theme() +
-    theme(axis.title.y = ggplot2::element_blank())
+    theme(axis.title.y = element_blank())
 }

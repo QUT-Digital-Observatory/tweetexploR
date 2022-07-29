@@ -23,11 +23,14 @@
 #'
 #' @importFrom dplyr slice_max
 #'
-#' @importFrom ggplot2 ggplot geom_col labs scale_x_discrete theme
+#' @importFrom ggplot2 ggplot geom_col labs scale_x_discrete theme coord_flip
+#'   element_blank
 #'
 #' @importFrom rlang .data
 #'
 #' @importFrom stats reorder
+#'
+#' @importFrom scales label_wrap
 #'
 #' @examples
 #' \dontrun{
@@ -51,9 +54,9 @@ top_n_replied_to_tweets <- function(sqlite_con, n = 10, tweet_chars = 80,
     geom_col(...) +
     labs(title = paste0("Top ", n, "replied to tweets (Twitter metrics)"),
          y = "Number of replies") +
-    scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +
+    scale_x_discrete(labels = label_wrap(chars_per_line)) +
     configure_y_axis() +
-    ggplot2::coord_flip() +
+    coord_flip() +
     configure_ggplot_theme() +
-    theme(axis.title.y = ggplot2::element_blank())
+    theme(axis.title.y = element_blank())
 }

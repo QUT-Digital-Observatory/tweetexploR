@@ -1,16 +1,5 @@
 # THINGS TO INVESTIGATE ####
 
-## DESCRIPTION.Imports vs. @importFrom ####
-# Using DESCRIPTION.Imports vs. @importFrom package function inside each
-# function. Currently all functions are using @importFrom except:
-#  check_for_valid_subset_input()
-#  configure_ggplot_theme()
-#  configure_y_axis()
-#  connect_to_sqlite_db()
-#  num_tweets_by_username()
-#  substitute_missing_to_input()
-
-
 ## Specifying minimum versions of packages ####
 
 

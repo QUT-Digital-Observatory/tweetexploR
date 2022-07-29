@@ -18,13 +18,15 @@
 #' @param period Period corresponding to the input to be checked
 #'
 #' @param input Input to be checked
+#'
+#' @importFrom lubridate ymd_hms ymd ym floor_date
 
 check_for_valid_subset_input <- function(period, input) {
 
   if(period == "hour") {
     tryCatch(
       expr = {
-        if(typeof(lubridate::ymd_hms(input)) == "double") {
+        if(typeof(ymd_hms(input)) == "double") {
         }
       },
       error = function(e) {
@@ -40,7 +42,7 @@ check_for_valid_subset_input <- function(period, input) {
   else if(period == "day") {
     tryCatch(
       expr = {
-        if(typeof(lubridate::ymd(input)) == "double") {
+        if(typeof(ymd(input)) == "double") {
         }
       },
       error = function(e) {
@@ -56,7 +58,7 @@ check_for_valid_subset_input <- function(period, input) {
   else if(period == "month") {
     tryCatch(
       expr = {
-        if(typeof(lubridate::floor_date(lubridate::ym(input), unit = "month")) == "double") {
+        if(typeof(floor_date(ym(input), unit = "month")) == "double") {
         }
       },
       error = function(e) {

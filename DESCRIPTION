@@ -16,6 +16,7 @@ Imports:
     rlang,
     RSQLite,
     scales,
+    stats,
     stringr
 Suggests: 
     testthat (>= 3.0.0),
