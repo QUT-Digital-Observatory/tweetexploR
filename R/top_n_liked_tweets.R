@@ -53,6 +53,7 @@ top_n_liked_tweets <- function(sqlite_con, n = 10, tweet_chars = 80,
                            .data$like_count), .data$like_count)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
+         x = "Tweet",
          y = "Number of likes") +
     scale_x_discrete(labels = label_wrap(chars_per_line)) +
     configure_y_axis() +

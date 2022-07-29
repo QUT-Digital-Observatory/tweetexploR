@@ -49,6 +49,7 @@ num_tweets_by_username <- function(sqlite_con, n = 10, ...) {
                y = .data$tweet_count)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
+         x = "Username",
          y = "Number of tweets") +
     coord_flip() +
     configure_y_axis() +

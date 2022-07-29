@@ -62,6 +62,7 @@ top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
                          .data$retweets), .data$retweets)) +
       geom_col(...) +
       labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
+           x = "Tweet",
            y = "Number of retweets") +
       scale_x_discrete(labels = label_wrap(chars_per_line)) +
       configure_y_axis() +

@@ -53,6 +53,7 @@ top_n_replied_to_tweets <- function(sqlite_con, n = 10, tweet_chars = 80,
                            .data$reply_count), .data$reply_count)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, "replied to tweets (Twitter metrics)"),
+         x = "Tweet",
          y = "Number of replies") +
     scale_x_discrete(labels = label_wrap(chars_per_line)) +
     configure_y_axis() +

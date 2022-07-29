@@ -52,6 +52,7 @@ top_n_hashtags <- function(sqlite_con, n = 10, ...) {
     ggplot(aes(x = reorder(.data$hashtag, .data$tags), .data$tags)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, " hashtags"),
+         x = "Hashtag",
          y = "Number of tweets") +
     configure_y_axis() +
     coord_flip() +

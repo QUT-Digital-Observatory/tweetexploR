@@ -53,6 +53,7 @@ top_n_mentions <- function(sqlite_con, n = 10, ...) {
     ggplot(aes(x = reorder(.data$account, .data$mentions), .data$mentions)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, " accounts mentioned in tweets"),
+         x = "Username",
          y = "Number of tweets") +
     configure_y_axis() +
     coord_flip() +
