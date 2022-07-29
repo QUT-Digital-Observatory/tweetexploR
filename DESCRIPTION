@@ -2,27 +2,25 @@ Package: tweetexploR
 Title: Explore Tidy Tweet SQLite Databases
 Version: 0.0.0.9000
 Authors@R: 
-    person("QUT Digital Observatory",
-    email = "digitalobservatory@qut.edu.au",
-    role = c("aut", "cre"))
-Description: Explore and visualise a collection of tweets that have been tidied 
-    into an SQLite database file by the 
-    [tidy-tweet package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
+    person("QUT Digital Observatory", , , "digitalobservatory@qut.edu.au", role = c("aut", "cre"))
+Description: Explore and visualise a collection of tweets that have been
+    tidied into an SQLite database file by the [tidy-tweet
+    package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
 License: MIT + file LICENSE
+Imports: 
+    DBI,
+    dplyr,
+    ggplot2,
+    lubridate,
+    magrittr,
+    rlang,
+    RSQLite,
+    scales,
+    stringr
+Suggests: 
+    testthat (>= 3.0.0),
+    vdiffr
+Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
-Suggests: 
-    vdiffr,
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
-Imports: 
-    magrittr,
-    DBI,
-    RSQLite,
-    ggplot2,
-    scales,
-    dplyr,
-    lubridate,
-    rlang,
-    stringr
