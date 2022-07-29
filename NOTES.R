@@ -1,6 +1,6 @@
 # THINGS TO INVESTIGATE ####
 
-## Specifying minimum versions of packages ####
+## Nothing to investigate at the moment! ####
 
 
 # IDEAS FOR TESTS ####
