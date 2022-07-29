@@ -22,6 +22,8 @@
 #' @param chars_per_line How many characters of the tweet text to be displayed
 #'   per line without breaking a word.
 #'
+#' @param ... Other arguments passed to [ggplot2::geom_col()].
+#'
 #' @return ggplot2 plot.
 #'
 #' @importFrom dplyr slice_max distinct
@@ -35,14 +37,16 @@
 #' @examples
 #' \dontrun{
 #'
-#' top_n_retweets(sqlite_con, 10)
+#' top_n_retweets(sqlite_con)
+#'
+#' top_n_retweets(sqlite_con, n = 12, fill = "blue")
 #'
 #' }
 #'
 #' @export
 
 top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
-                           tweet_chars = 80, chars_per_line = 50) {
+                           tweet_chars = 80, chars_per_line = 50, ...) {
   if (metrics == FALSE) {
     DBI::dbGetQuery(sqlite_con,
     "SELECT retweeted_tweet_id, count(*) as `retweets`, text
@@ -52,7 +56,7 @@ top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
       slice_max(n = n, order_by = .data$retweets, with_ties = TRUE) %>%
       ggplot(aes(reorder(substr(.data$text, 1, tweet_chars),
                          .data$retweets), .data$retweets)) +
-      geom_col() +
+      geom_col(...) +
       labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
            y = "Number of retweets") +
       scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +
@@ -70,7 +74,7 @@ top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
       slice_max(n = n, order_by = .data$retweet_count, with_ties = TRUE) %>%
       ggplot(aes(x = reorder(substr(.data$text, 1, tweet_chars),
                              .data$retweet_count), .data$retweet_count)) +
-      geom_col() +
+      geom_col(...) +
       labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
            y = "Number of retweets") +
       scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +

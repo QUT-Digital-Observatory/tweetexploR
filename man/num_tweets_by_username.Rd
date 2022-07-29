@@ -4,7 +4,7 @@
 \alias{num_tweets_by_username}
 \title{Plot number of tweets for top n usernames}
 \usage{
-num_tweets_by_username(sqlite_con, n = 10)
+num_tweets_by_username(sqlite_con, n = 10, ...)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -15,6 +15,8 @@ be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
 \item{n}{Number of usernames to be plotted. Note, ties will be included.
 Default value is 10.}
+
+\item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
 ggplot2 plot.
@@ -26,8 +28,11 @@ for the top \code{n} usernames (ties for \code{n}th position will be included).
 \examples{
 \dontrun{
 
-num_tweets_by_username(sqlite_con, n = 10)
+num_tweets_by_username(sqlite_con, n = 12)
+
 my_plot <- num_tweets_by_username(sqlite_con, 20)
+
+num_tweets_by_username(sqlite_con, fill = "blue")
 }
 
 }

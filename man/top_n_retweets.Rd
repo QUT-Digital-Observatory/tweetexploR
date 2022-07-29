@@ -9,7 +9,8 @@ top_n_retweets(
   n = 10,
   metrics = FALSE,
   tweet_chars = 80,
-  chars_per_line = 50
+  chars_per_line = 50,
+  ...
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ retweets based on Twitter metrics at the time the data were collected.}
 
 \item{chars_per_line}{How many characters of the tweet text to be displayed
 per line without breaking a word.}
+
+\item{...}{Other arguments passed to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
 ggplot2 plot.
@@ -42,7 +45,9 @@ retweeted tweets (ties for \code{n}th position will be included) were retweeted.
 \examples{
 \dontrun{
 
-top_n_retweets(sqlite_con, 10)
+top_n_retweets(sqlite_con)
+
+top_n_retweets(sqlite_con, n = 12, fill = "blue")
 
 }
 

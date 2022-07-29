@@ -4,7 +4,13 @@
 \alias{top_n_liked_tweets}
 \title{Plot top n liked tweets}
 \usage{
-top_n_liked_tweets(sqlite_con, n = 10, tweet_chars = 80, chars_per_line = 50)
+top_n_liked_tweets(
+  sqlite_con,
+  n = 10,
+  tweet_chars = 80,
+  chars_per_line = 50,
+  ...
+)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -20,6 +26,8 @@ Default value is 10.}
 
 \item{chars_per_line}{How many characters of the tweet text to be displayed
 per line without breaking a word.}
+
+\item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
 ggplot2 plot.
@@ -32,6 +40,8 @@ Create a ggplot2 bar chart of the top \code{n} liked tweets (ties for
 \dontrun{
 
 top_n_liked_tweets(sqlite_con, 20)
+
+top_n_liked_tweets(sqlite_con, fill = "blue")
 
 }
 

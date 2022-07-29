@@ -17,6 +17,8 @@
 #' @param chars_per_line How many characters of the tweet text to be displayed
 #'   per line without breaking a word.
 #'
+#' @param ... Other arguments to be passed to [ggplot2::geom_col()].
+#'
 #' @return ggplot2 plot.
 #'
 #' @importFrom dplyr slice_max
@@ -32,19 +34,21 @@
 #'
 #' top_n_replied_to_tweets(sqlite_con, 12)
 #'
+#' top_n_replied_to_tweets(sqlite_con, fill = "blue")
+#'
 #' }
 #'
 #' @export
 
 top_n_replied_to_tweets <- function(sqlite_con, n = 10, tweet_chars = 80,
-                                    chars_per_line = 50) {
+                                    chars_per_line = 50, ...) {
   DBI::dbGetQuery(sqlite_con,
   "SELECT id, reply_count, text
   FROM tweet;") %>%
     slice_max(n = n, order_by = .data$reply_count, with_ties = TRUE) %>%
     ggplot(aes(x = reorder(substr(.data$text, 1, tweet_chars),
                            .data$reply_count), .data$reply_count)) +
-    geom_col() +
+    geom_col(...) +
     labs(title = paste0("Top ", n, "replied to tweets (Twitter metrics)"),
          y = "Number of replies") +
     scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +

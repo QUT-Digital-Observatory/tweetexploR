@@ -8,7 +8,8 @@ top_n_replied_to_tweets(
   sqlite_con,
   n = 10,
   tweet_chars = 80,
-  chars_per_line = 50
+  chars_per_line = 50,
+  ...
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ Default value is 10.}
 
 \item{chars_per_line}{How many characters of the tweet text to be displayed
 per line without breaking a word.}
+
+\item{...}{Other arguments to be passed to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
 ggplot2 plot.
@@ -37,6 +40,8 @@ Create a ggplot2 bar chart of the top \code{n} replied to tweets
 \dontrun{
 
 top_n_replied_to_tweets(sqlite_con, 12)
+
+top_n_replied_to_tweets(sqlite_con, fill = "blue")
 
 }
 

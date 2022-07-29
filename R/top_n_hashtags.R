@@ -12,6 +12,8 @@
 #' @param n Number of hashtags to be plotted. Note, ties will be included.
 #'   Default value is 10.
 #'
+#' @param ... Other arguments passed on to [ggplot2::geom_col()].
+#'
 #' @return ggplot2 plot.
 #'
 #' @importFrom dplyr mutate rename group_by summarise n slice_max
@@ -27,14 +29,17 @@
 #' @examples
 #' \dontrun{
 #'
-#' top_n_hashtags(sqlite_con, n = 10)
+#' top_n_hashtags(sqlite_con, n = 12)
+#'
 #' my_plot <- top_n_hashtags(sqlite_con, 20)
+#'
+#' top_n_hashtags(sqlite_con, fill = "blue")
 #'
 #' }
 #'
 #' @export
 
-top_n_hashtags <- function(sqlite_con, n = 10) {
+top_n_hashtags <- function(sqlite_con, n = 10, ...) {
   DBI::dbGetQuery(sqlite_con,
   "SELECT tag, source_id
   FROM hashtag
@@ -45,7 +50,7 @@ top_n_hashtags <- function(sqlite_con, n = 10) {
     summarise(tags = n()) %>%
     slice_max(n = n, order_by = .data$tags, with_ties = TRUE) %>%
     ggplot(aes(x = reorder(.data$hashtag, .data$tags), .data$tags)) +
-    geom_col() +
+    geom_col(...) +
     labs(title = paste0("Top ", n, " hashtags"),
          y = "Number of tweets") +
     configure_y_axis() +

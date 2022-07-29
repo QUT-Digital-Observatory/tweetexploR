@@ -41,6 +41,9 @@
 #'   For monthly charts, provide a character string in the format
 #'   `"%Y-%m"`. For example `"2022-06"`
 #'
+#' @param ... Other arguments passed on to [ggplot2::geom_line()] for hourly and
+#'   daily charts, or [ggplot2::geom_col()] for monthly charts.
+#'
 #' @return ggplot2 plot.
 #'
 #' @importFrom dplyr mutate filter n_distinct group_by summarise
@@ -68,11 +71,15 @@
 #' my_plot <- num_users_by_timeperiod(sqlite_con, period = "month",
 #'   to = "2022-07")
 #'
+#' num_users_by_timeperiod(sqlite_con, period = "day", colour = "red")
+#'
+#' num_users_by_timeperiod(sqlite_con, period = "month", fill = "blue")
+#'
 #' }
 #'
 #' @export
 
-num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
+num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
 
   # Check if `period` is valid
   check_if_period_is_valid(period)
@@ -106,7 +113,7 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
       group_by(.data$created_at_hour) %>%
       summarise(accounts = n_distinct(.data$author_id)) %>%
       ggplot(aes(x = .data$created_at_hour, y = .data$accounts)) +
-      geom_line(group = 1) +
+      geom_line(group = 1, ...) +
       labs(title = "Number of unique accounts that tweeted per hour",
            x = "Hour",
            y = "Number of accounts") +
@@ -122,7 +129,7 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
     GROUP BY day;") %>%
       filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
       ggplot(aes(x = ymd(.data$day), y = .data$accounts)) +
-      geom_line(group = 1) +
+      geom_line(group = 1, ...) +
       labs(title = "Number of unique accounts that tweeted per day",
            x = "Day",
            y = "Number of accounts") +
@@ -143,7 +150,7 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to) {
       filter(.data$month >= ymd(paste0(from, "-01")) &
                .data$month <= ymd(paste0(to, "-01"))) %>%
       ggplot(aes(x = .data$month, y = .data$accounts)) +
-      geom_col() +
+      geom_col(...) +
       labs(title = "Number of unique accounts that tweeted per month",
            x = "Month",
            y = "Number of accounts") +

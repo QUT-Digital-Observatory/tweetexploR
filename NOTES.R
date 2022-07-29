@@ -35,9 +35,6 @@
 
 ## Ability for user to include/exclude retweets ####
 
-## Ability for user to change colour of lines/bars in plots ####
-# Possibly can be achieved with 'pass the dots'?
-
 
 # NOTES FOR DOCUMENTATION ####
 

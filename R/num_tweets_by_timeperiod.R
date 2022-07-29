@@ -41,6 +41,9 @@
 #'   For monthly charts, provide a character string in the format
 #'   `"%Y-%m"`. For example `"2022-06"`
 #'
+#' @param ... Other arguments passed on to [ggplot2::geom_line()] for hourly and
+#'   daily charts, or [ggplot2::geom_col()] for monthly charts.
+#'
 #' @return ggplot2 plot.
 #'
 #' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date geom_col
@@ -65,12 +68,16 @@
 #' my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "month",
 #'   from = "2022-06")
 #'
+#' num_tweets_by_timeperiod(sqlite_con, period = "hour", colour = "blue")
+#'
+#' num_tweets_by_timeperiod(sqlite_con, period = "month", fill = "blue")
+#'
 #' }
 #'
 #' @export
 # Number of tweets by username (top n usernames)
 
-num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
+num_tweets_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
 
   # Check if `period` is valid
   check_if_period_is_valid(period)
@@ -102,7 +109,7 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
       group_by(.data$created_at_hour) %>%
       summarise(tweets = n()) %>%
       ggplot(aes(x = .data$created_at_hour, y = .data$tweets)) +
-      geom_line(group = 1) +
+      geom_line(group = 1, ...) +
       labs(title = "Number of tweets per hour",
            x = "Hour",
            y = "Number of tweets") +
@@ -118,7 +125,7 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
                     GROUP BY day;") %>%
       filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
       ggplot(aes(x = ymd(.data$day), y = .data$tweets)) +
-      geom_line(group = 1) +
+      geom_line(group = 1, ...) +
       labs(title = "Number of tweets per day",
            x = "Day",
            y = "Number of tweets") +
@@ -140,7 +147,7 @@ num_tweets_by_timeperiod <- function(sqlite_con, period, from, to) {
        .data$month >= ymd(paste0(from, "-01")) &
          .data$month <= ymd(paste0(to, "-01"))) %>%
       ggplot(aes(x = .data$month, y = .data$tweets)) +
-      geom_col() +
+      geom_col(...) +
       labs(title = "Number of tweets per month",
           x = "Month",
           y = "Number of tweets") +

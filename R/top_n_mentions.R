@@ -13,6 +13,8 @@
 #' @param n Number of accounts to be plotted. Note, ties will be included.
 #'   Default value is 10.
 #'
+#' @param ... Other arguments passed to [ggplot2::geom_col()].
+#'
 #' @return ggplot2 plot.
 #'
 #' @importFrom dplyr mutate rename group_by summarise n slice_max
@@ -29,13 +31,16 @@
 #' \dontrun{
 #'
 #' top_n_mentions(sqlite_con, n = 10)
+#'
 #' my_plot <- top_n_mentions(sqlite_con, 20)
+#'
+#' top_n_mentions(sqlite_con, fill = "blue")
 #'
 #' }
 #'
 #' @export
 
-top_n_mentions <- function(sqlite_con, n = 10) {
+top_n_mentions <- function(sqlite_con, n = 10, ...) {
   DBI::dbGetQuery(sqlite_con,
   "SELECT username, source_id
   FROM mention
@@ -46,7 +51,7 @@ top_n_mentions <- function(sqlite_con, n = 10) {
     summarise(mentions = n()) %>%
     slice_max(n = n, order_by = .data$mentions, with_ties = TRUE) %>%
     ggplot(aes(x = reorder(.data$account, .data$mentions), .data$mentions)) +
-    geom_col() +
+    geom_col(...) +
     labs(title = paste0("Top ", n, " accounts mentioned in tweets"),
          y = "Number of tweets") +
     configure_y_axis() +

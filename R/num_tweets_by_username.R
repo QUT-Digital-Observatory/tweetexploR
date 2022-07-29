@@ -12,18 +12,23 @@
 #' @param n Number of usernames to be plotted. Note, ties will be included.
 #'   Default value is 10.
 #'
+#' @param ... Other arguments passed on to [ggplot2::geom_col()].
+#'
 #' @return ggplot2 plot.
 #'
 #' @examples
 #' \dontrun{
 #'
-#' num_tweets_by_username(sqlite_con, n = 10)
+#' num_tweets_by_username(sqlite_con, n = 12)
+#'
 #' my_plot <- num_tweets_by_username(sqlite_con, 20)
+#'
+#' num_tweets_by_username(sqlite_con, fill = "blue")
 #' }
 #'
 #' @export
 # Number of tweets by username (top n usernames)
-num_tweets_by_username <- function(sqlite_con, n = 10) {
+num_tweets_by_username <- function(sqlite_con, n = 10, ...) {
   DBI::dbGetQuery(sqlite_con,
                   "SELECT count(*) as `tweet_count`, username
                   FROM tweet
@@ -34,7 +39,7 @@ num_tweets_by_username <- function(sqlite_con, n = 10) {
                   GROUP BY username;") %>%
     dplyr::slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
     ggplot2::ggplot(ggplot2::aes(x = stats::reorder(.data$username, .data$tweet_count), y = .data$tweet_count)) +
-    ggplot2::geom_col() +
+    ggplot2::geom_col(...) +
     ggplot2::labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
                   y = "Number of tweets") +
     ggplot2::coord_flip() +

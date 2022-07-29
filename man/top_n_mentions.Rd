@@ -4,7 +4,7 @@
 \alias{top_n_mentions}
 \title{Plot top n account mentions}
 \usage{
-top_n_mentions(sqlite_con, n = 10)
+top_n_mentions(sqlite_con, n = 10, ...)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -15,6 +15,8 @@ be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
 \item{n}{Number of accounts to be plotted. Note, ties will be included.
 Default value is 10.}
+
+\item{...}{Other arguments passed to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
 ggplot2 plot.
@@ -28,7 +30,10 @@ tweets.
 \dontrun{
 
 top_n_mentions(sqlite_con, n = 10)
+
 my_plot <- top_n_mentions(sqlite_con, 20)
+
+top_n_mentions(sqlite_con, fill = "blue")
 
 }
 
