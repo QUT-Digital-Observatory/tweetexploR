@@ -12,9 +12,16 @@
 #' @param n Number of hashtags to be plotted. Note, ties will be included.
 #'   Default value is 10.
 #'
+#' @param return_data Should the data underlying the chart be returned?
+#'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
+#'   in the second element, `data`, of the returned list.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_col()].
 #'
-#' @return ggplot2 plot.
+#' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
+#'   first element, `chart`, being a ggplot2 plot, and the second element,
+#'   `data`, being the underlying data for the ggplot2 plot in the form of a
+#'   [tibble](https://tibble.tidyverse.org/).
 #'
 #' @importFrom dplyr mutate rename group_by summarise n slice_max
 #'
@@ -35,12 +42,15 @@
 #'
 #' top_n_hashtags(sqlite_con, fill = "blue")
 #'
+#' top_10_hashtags <- top_n_hashtags(sqlite_con, return_data = TRUE)
+#'
 #' }
 #'
 #' @export
 
-top_n_hashtags <- function(sqlite_con, n = 10, ...) {
-  DBI::dbGetQuery(sqlite_con,
+top_n_hashtags <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
+
+  chart_data <- DBI::dbGetQuery(sqlite_con,
   "SELECT tag, source_id
   FROM hashtag
   WHERE source_type = 'tweet';") %>%
@@ -48,8 +58,10 @@ top_n_hashtags <- function(sqlite_con, n = 10, ...) {
     rename(hashtag = .data$tag) %>%
     group_by(.data$hashtag) %>%
     summarise(tags = n()) %>%
-    slice_max(n = n, order_by = .data$tags, with_ties = TRUE) %>%
-    ggplot(aes(x = reorder(.data$hashtag, .data$tags), .data$tags)) +
+    slice_max(n = n, order_by = .data$tags, with_ties = TRUE)
+
+  chart <- ggplot(chart_data, aes(x = reorder(.data$hashtag, .data$tags),
+                                  y = .data$tags)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, " hashtags"),
          x = "Hashtag",
@@ -58,4 +70,13 @@ top_n_hashtags <- function(sqlite_con, n = 10, ...) {
     coord_flip() +
     configure_ggplot_theme() +
     theme(axis.title.y = element_blank())
+
+  if (return_data == TRUE) {
+    return(list(chart = chart, data = chart_data))
+  }
+
+  else if (return_data == FALSE) {
+    return(chart)
+  }
+
 }
