@@ -10,6 +10,7 @@ top_n_retweets(
   metrics = FALSE,
   tweet_chars = 80,
   chars_per_line = 50,
+  return_data = FALSE,
   ...
 )
 }
@@ -33,10 +34,17 @@ retweets based on Twitter metrics at the time the data were collected.}
 \item{chars_per_line}{How many characters of the tweet text to be displayed
 per line without breaking a word.}
 
+\item{return_data}{Should the data underlying the chart be returned?
+The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
+in the second element, \code{data}, of the returned list.}
+
 \item{...}{Other arguments passed to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
-ggplot2 plot.
+ggplot2 plot. If \code{return_data = TRUE}, returns a named list with the
+first element, \code{chart}, being a ggplot2 plot, and the second element,
+\code{data}, being the underlying data for the ggplot2 plot in the form of a
+\href{https://tibble.tidyverse.org/}{tibble}.
 }
 \description{
 Create a ggplot2 bar chart of the number of times the top \code{n}
@@ -48,6 +56,8 @@ retweeted tweets (ties for \code{n}th position will be included) were retweeted.
 top_n_retweets(sqlite_con)
 
 top_n_retweets(sqlite_con, n = 12, fill = "blue")
+
+top_10_retweets <- (sqlite_con, return_data = TRUE)
 
 }
 
