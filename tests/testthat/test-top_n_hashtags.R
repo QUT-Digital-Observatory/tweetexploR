@@ -24,9 +24,9 @@ test_that("list of length 2 is created as expected", {
 })
 
 
-test_that("first element of list (chart) is a ggplot2 object", {
+test_that("first element of list (chart) is a list", {
   top_10_hashtags <- top_n_hashtags(sqlite_con, return_data = TRUE)
-  expect_true(ggplot2::is.ggplot(top_n_hashtags(sqlite_con)))
+  expect_type(top_10_hashtags$chart, "list")
 })
 
 
