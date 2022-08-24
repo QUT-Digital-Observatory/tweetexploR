@@ -9,6 +9,7 @@ top_n_liked_tweets(
   n = 10,
   tweet_chars = 80,
   chars_per_line = 50,
+  return_data = FALSE,
   ...
 )
 }
@@ -27,10 +28,17 @@ Default value is 10.}
 \item{chars_per_line}{How many characters of the tweet text to be displayed
 per line without breaking a word.}
 
+\item{return_data}{Should the data underlying the chart be returned?
+The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
+in the second element, \code{data}, of the returned list.}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
-ggplot2 plot.
+ggplot2 plot. If \code{return_data = TRUE}, returns a named list with the
+first element, \code{chart}, being a ggplot2 plot, and the second element,
+\code{data}, being the underlying data for the ggplot2 plot in the form of a
+data frame.
 }
 \description{
 Create a ggplot2 bar chart of the top \code{n} liked tweets (ties for
@@ -42,6 +50,8 @@ Create a ggplot2 bar chart of the top \code{n} liked tweets (ties for
 top_n_liked_tweets(sqlite_con, 20)
 
 top_n_liked_tweets(sqlite_con, fill = "blue")
+
+top_50_liked_tweets <- top_n_hashtags(sqlite_con, n = 50, return_data = TRUE)
 
 }
 
