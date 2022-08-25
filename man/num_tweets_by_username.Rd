@@ -4,7 +4,7 @@
 \alias{num_tweets_by_username}
 \title{Plot number of tweets for top n usernames}
 \usage{
-num_tweets_by_username(sqlite_con, n = 10, ...)
+num_tweets_by_username(sqlite_con, n = 10, return_data = FALSE, ...)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -16,10 +16,17 @@ be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 \item{n}{Number of usernames to be plotted. Note, ties will be included.
 Default value is 10.}
 
+\item{return_data}{Should the data underlying the chart be returned?
+The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
+in the second element, \code{data}, of the returned list.}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
-ggplot2 plot.
+ggplot2 plot. If \code{return_data = TRUE}, returns a named list with the
+first element, \code{chart}, being a ggplot2 plot, and the second element,
+\code{data}, being the underlying data for the ggplot2 plot in the form of a
+\href{https://tibble.tidyverse.org/}{tibble}.
 }
 \description{
 Create a ggplot2 bar chart of the number of tweets per username
@@ -33,6 +40,8 @@ num_tweets_by_username(sqlite_con, n = 12)
 my_plot <- num_tweets_by_username(sqlite_con, 20)
 
 num_tweets_by_username(sqlite_con, fill = "blue")
+
+results <- num_tweets_by_username(sqlite_con, return_data = TRUE)
 
 }
 

@@ -12,9 +12,16 @@
 #' @param n Number of usernames to be plotted. Note, ties will be included.
 #'   Default value is 10.
 #'
+#' @param return_data Should the data underlying the chart be returned?
+#'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
+#'   in the second element, `data`, of the returned list.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_col()].
 #'
-#' @return ggplot2 plot.
+#' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
+#'   first element, `chart`, being a ggplot2 plot, and the second element,
+#'   `data`, being the underlying data for the ggplot2 plot in the form of a
+#'   [tibble](https://tibble.tidyverse.org/).
 #'
 #' @importFrom dplyr slice_max
 #'
@@ -31,22 +38,29 @@
 #'
 #' num_tweets_by_username(sqlite_con, fill = "blue")
 #'
+#' results <- num_tweets_by_username(sqlite_con, return_data = TRUE)
+#'
 #' }
 #'
 #' @export
 
-num_tweets_by_username <- function(sqlite_con, n = 10, ...) {
-  DBI::dbGetQuery(sqlite_con,
-                  "SELECT count(*) as `tweet_count`, username
-                  FROM tweet
-                  LEFT JOIN (
-                    SELECT username, id
-                    FROM user ) user
-                  ON user.id = tweet.author_id
-                  GROUP BY username;") %>%
-    slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
-    ggplot(aes(x = reorder(.data$username, .data$tweet_count),
-               y = .data$tweet_count)) +
+num_tweets_by_username <- function(sqlite_con,
+                                   n = 10,
+                                   return_data = FALSE, ...) {
+
+  chart_data <- DBI::dbGetQuery(sqlite_con,
+    "SELECT count(*) as `tweet_count`, username
+    FROM tweet
+    LEFT JOIN (
+      SELECT username, id
+      FROM user ) user
+    ON user.id = tweet.author_id
+    GROUP BY username;") %>%
+    slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE)
+
+  chart <- ggplot(chart_data,
+                  aes(x = reorder(.data$username, .data$tweet_count),
+                      y = .data$tweet_count)) +
     geom_col(...) +
     labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
          x = "Username",
@@ -55,4 +69,13 @@ num_tweets_by_username <- function(sqlite_con, n = 10, ...) {
     configure_y_axis() +
     configure_ggplot_theme() +
     theme(axis.title.y = element_blank())
+
+  if (return_data == TRUE) {
+    return(list(chart = chart, data = chart_data))
+  }
+
+  else if (return_data == FALSE) {
+    return(chart)
+  }
+
 }
