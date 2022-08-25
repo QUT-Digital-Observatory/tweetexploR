@@ -30,7 +30,7 @@ test_that("first element of list (chart) is a list", {
 })
 
 
-test_that("second element of list (data) is a tibble", {
+test_that("second element of list (data) is a data frame", {
   results <- num_tweets_by_username(sqlite_con, return_data = TRUE)
   expect_true(is.data.frame(results$data))
 })

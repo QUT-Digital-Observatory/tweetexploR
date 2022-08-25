@@ -21,7 +21,7 @@
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
 #'   first element, `chart`, being a ggplot2 plot, and the second element,
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
-#'   [tibble](https://tibble.tidyverse.org/).
+#'   data frame.
 #'
 #' @importFrom dplyr slice_max
 #'
