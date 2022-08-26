@@ -22,7 +22,7 @@
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
 #'   first element, `chart`, being a ggplot2 plot, and the second element,
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
-#'   [tibble](https://tibble.tidyverse.org/).
+#'   data frame.
 #'
 #' @importFrom dplyr mutate rename group_by summarise n slice_max
 #'
@@ -59,7 +59,8 @@ top_n_mentions <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
     rename(account = .data$username) %>%
     group_by(.data$account) %>%
     summarise(mentions = n()) %>%
-    slice_max(n = n, order_by = .data$mentions, with_ties = TRUE)
+    slice_max(n = n, order_by = .data$mentions, with_ties = TRUE) %>%
+    as.data.frame()
 
   chart <- ggplot(chart_data, aes(x = reorder(.data$account, .data$mentions),
                                   y = .data$mentions)) +

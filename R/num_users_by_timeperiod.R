@@ -126,7 +126,8 @@ num_users_by_timeperiod <- function(sqlite_con,
       filter(.data$created_at_hour >= ymd_hms(from) &
                .data$created_at_hour <= ymd_hms(to)) %>%
       group_by(.data$created_at_hour) %>%
-      summarise(accounts = n_distinct(.data$author_id))
+      summarise(accounts = n_distinct(.data$author_id)) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data,
                     aes(x = .data$created_at_hour, y = .data$accounts)) +
@@ -154,7 +155,8 @@ num_users_by_timeperiod <- function(sqlite_con,
     "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
     FROM tweet
     GROUP BY day;") %>%
-      filter(.data$day >= ymd(from) & .data$day <= ymd(to))
+      filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data,
                     aes(x = ymd(.data$day), y = .data$accounts)) +
@@ -187,7 +189,8 @@ num_users_by_timeperiod <- function(sqlite_con,
       group_by(.data$month) %>%
       summarise(accounts = sum(.data$accounts)) %>%
       filter(.data$month >= ymd(paste0(from, "-01")) &
-               .data$month <= ymd(paste0(to, "-01")))
+               .data$month <= ymd(paste0(to, "-01"))) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data,
                     aes(x = .data$month, y = .data$accounts)) +

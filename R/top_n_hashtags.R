@@ -21,7 +21,7 @@
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
 #'   first element, `chart`, being a ggplot2 plot, and the second element,
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
-#'   [tibble](https://tibble.tidyverse.org/).
+#'   data frame.
 #'
 #' @importFrom dplyr mutate rename group_by summarise n slice_max
 #'
@@ -58,7 +58,8 @@ top_n_hashtags <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
     rename(hashtag = .data$tag) %>%
     group_by(.data$hashtag) %>%
     summarise(tags = n()) %>%
-    slice_max(n = n, order_by = .data$tags, with_ties = TRUE)
+    slice_max(n = n, order_by = .data$tags, with_ties = TRUE) %>%
+    as.data.frame()
 
   chart <- ggplot(chart_data, aes(x = reorder(.data$hashtag, .data$tags),
                                   y = .data$tags)) +

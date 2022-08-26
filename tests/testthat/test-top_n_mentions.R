@@ -33,8 +33,8 @@ test_that("first element of list (chart) is a list", {
 })
 
 
-test_that("second element of list (data) is a tibble", {
-  expect_true(tibble::is_tibble(results$data))
+test_that("second element of list (data) is a data frame", {
+  expect_true(is.data.frame(results$data))
 })
 
 

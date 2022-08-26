@@ -56,7 +56,8 @@ num_tweets_by_username <- function(sqlite_con,
       FROM user ) user
     ON user.id = tweet.author_id
     GROUP BY username;") %>%
-    slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE)
+    slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
+    as.data.frame()
 
   chart <- ggplot(chart_data,
                   aes(x = reorder(.data$username, .data$tweet_count),

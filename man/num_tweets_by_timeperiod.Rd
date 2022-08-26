@@ -58,7 +58,7 @@ daily charts, or \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}} for monthly
 ggplot2 plot. If\code{return_data = TRUE}, returns a named list with the
 first element, \code{chart}, being a ggplot2 plot, and the second element,
 \code{data}, being the underlying data for the ggplot2 plot in the form of a
-\href{https://tibble.tidyverse.org/}{tibble}.
+data frame.
 }
 \description{
 Create a ggplot2 chart of the number of tweets per

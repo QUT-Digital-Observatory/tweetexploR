@@ -58,7 +58,8 @@ top_n_liked_tweets <- function(sqlite_con, n = 10, tweet_chars = 80,
   chart_data <- DBI::dbGetQuery(sqlite_con,
   "SELECT id, like_count, text
   FROM tweet;") %>%
-    slice_max(n = n, order_by = .data$like_count, with_ties = TRUE)
+    slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
+    as.data.frame()
 
   chart <- ggplot(chart_data, aes(x = reorder(substr(.data$text, 1, tweet_chars),
                                               .data$like_count),

@@ -44,7 +44,7 @@ in the second element, \code{data}, of the returned list.}
 ggplot2 plot. If \code{return_data = TRUE}, returns a named list with the
 first element, \code{chart}, being a ggplot2 plot, and the second element,
 \code{data}, being the underlying data for the ggplot2 plot in the form of a
-\href{https://tibble.tidyverse.org/}{tibble}.
+data frame.
 }
 \description{
 Create a ggplot2 bar chart of the number of times the top \code{n}

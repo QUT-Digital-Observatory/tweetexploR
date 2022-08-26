@@ -65,8 +65,8 @@ test_that("first element of list (chart) is a list (hourly plot)", {
 })
 
 
-test_that("second element of list (data) is a tibble (hourly plot)", {
-  expect_true(tibble::is_tibble(results_hourly$data))
+test_that("second element of list (data) is a data frame (hourly plot)", {
+  expect_true(is.data.frame(results_hourly$data))
 })
 
 
@@ -87,8 +87,8 @@ test_that("first element of list (chart) is a list (daily plot)", {
 })
 
 
-test_that("second element of list (data) is a tibble (daily plot)", {
-  expect_true(tibble::is_tibble(results_daily$data))
+test_that("second element of list (data) is a data frame (daily plot)", {
+  expect_true(is.data.frame(results_daily$data))
 })
 
 
@@ -109,8 +109,8 @@ test_that("first element of list (chart) is a list (monthly plot)", {
 })
 
 
-test_that("second element of list (data) is a tibble (monthly plot)", {
-  expect_true(tibble::is_tibble(results_monthly$data))
+test_that("second element of list (data) is a data frame (monthly plot)", {
+  expect_true(is.data.frame(results_monthly$data))
 })
 
 

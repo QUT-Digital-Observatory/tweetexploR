@@ -51,7 +51,7 @@
 #' @return ggplot2 plot. If`return_data = TRUE`, returns a named list with the
 #'   first element, `chart`, being a ggplot2 plot, and the second element,
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
-#'   [tibble](https://tibble.tidyverse.org/).
+#'   data frame.
 #'
 #' @importFrom ggplot2 ggplot aes geom_line labs scale_x_date geom_col
 #'
@@ -124,7 +124,8 @@ num_tweets_by_timeperiod <- function(sqlite_con,
       filter(.data$created_at_hour >= ymd_hms(from) &
                .data$created_at_hour <= ymd_hms(to)) %>%
       group_by(.data$created_at_hour) %>%
-      summarise(tweets = n())
+      summarise(tweets = n()) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data,
                     aes(x = .data$created_at_hour, y = .data$tweets)) +
@@ -152,8 +153,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
       "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
       GROUP BY day;") %>%
-      filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
-      tibble::tibble()
+      filter(.data$day >= ymd(from) & .data$day <= ymd(to))
 
     chart <- ggplot(chart_data, aes(x = ymd(.data$day), y = .data$tweets)) +
       geom_line(group = 1, ...) +
@@ -186,7 +186,8 @@ num_tweets_by_timeperiod <- function(sqlite_con,
       summarise(tweets = sum(.data$tweets)) %>%
       filter(
        .data$month >= ymd(paste0(from, "-01")) &
-         .data$month <= ymd(paste0(to, "-01")))
+         .data$month <= ymd(paste0(to, "-01"))) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data, aes(x = .data$month, y = .data$tweets)) +
       geom_col(...) +

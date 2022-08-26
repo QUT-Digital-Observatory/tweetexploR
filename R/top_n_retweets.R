@@ -31,7 +31,7 @@
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
 #'   first element, `chart`, being a ggplot2 plot, and the second element,
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
-#'   [tibble](https://tibble.tidyverse.org/).
+#'   data frame.
 #'
 #' @importFrom dplyr slice_max distinct
 #'
@@ -68,7 +68,8 @@ top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
     FROM tweet
     WHERE retweeted_tweet_id IS NOT NULL
     GROUP BY retweeted_tweet_id;") %>%
-      slice_max(n = n, order_by = .data$retweets, with_ties = TRUE)
+      slice_max(n = n, order_by = .data$retweets, with_ties = TRUE) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data,
       aes(x = reorder(substr(.data$text, 1, tweet_chars), .data$retweets),
@@ -99,7 +100,8 @@ top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
     "SELECT retweet_count, text
     FROM tweet;") %>%
       distinct() %>%
-      slice_max(n = n, order_by = .data$retweet_count, with_ties = TRUE)
+      slice_max(n = n, order_by = .data$retweet_count, with_ties = TRUE) %>%
+      as.data.frame()
 
     chart <- ggplot(chart_data,
       aes(x = reorder(substr(.data$text, 1, tweet_chars), .data$retweet_count),
