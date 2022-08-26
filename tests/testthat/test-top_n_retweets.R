@@ -1,8 +1,10 @@
+# Database connection ####
+
 # Connect to sqlite .db file
 sqlite_con <- connect_to_sqlite_db(test_path("fixtures", "auspol-test.db"))
 
 
-# Tests for when return_data = FALSE
+# Tests for when return_data = FALSE ####
 
 test_that("result is a ggplot2 object", {
   expect_true(ggplot2::is.ggplot(top_n_retweets(sqlite_con, 10)))
@@ -21,43 +23,46 @@ test_that("ggplot2 plot has expected output", {
 })
 
 
-# Tests for when return_data = TRUE
+# Tests for when return_data = TRUE ####
 
-test_that("list of length 2 is created as expected", {
-  top_10_retweets <- top_n_retweets(sqlite_con, return_data = TRUE)
-  expect_type(top_10_retweets, "list")
-  expect_equal(2, length(top_10_retweets))
+results_metrics_true <- top_n_retweets(sqlite_con,
+                                       n = 10,
+                                       metrics = TRUE,
+                                       return_data = TRUE)
+
+results_metrics_false <- top_n_retweets(sqlite_con,
+                                        n = 10,
+                                        metrics = FALSE,
+                                        return_data = TRUE)
+
+
+test_that("list of length 2 is created as expected (metrics = TRUE)", {
+  expect_type(results_metrics_true, "list")
+  expect_equal(2, length(results_metrics_true))
 })
 
 
-test_that("first element of list (chart) is a list", {
-  top_10_retweets <- top_n_retweets(sqlite_con, return_data = TRUE)
-  expect_type(top_10_retweets$chart, "list")
+test_that("first element of list (chart) is a list (metrics = TRUE)", {
+  expect_type(results_metrics_true$chart, "list")
 })
 
 
-test_that("second element of list (data) is a data frame", {
-  top_10_retweets <- top_n_retweets(sqlite_con, return_data = TRUE)
-  expect_true(is.data.frame(top_10_retweets$data))
+test_that("second element of list (data) is a data frame (metrics = TRUE)", {
+  expect_true(is.data.frame(results_metrics_true$data))
 })
 
 
-test_that("ggplot2 plot has expected output", {
-  top_10_retweets <- top_n_retweets(sqlite_con,
-                                    return_data = TRUE,
-                                    metrics = FALSE)
-  vdiffr::expect_doppelganger("top_n_retweets_10_metrics_false",
-                              top_10_retweets$chart)
-})
-
-test_that("ggplot2 plot has expected output", {
-  top_10_retweets <- top_n_retweets(sqlite_con,
-                                    return_data = TRUE,
-                                    metrics = TRUE)
+test_that("ggplot2 plot has expected output (metrics = TRUE)", {
   vdiffr::expect_doppelganger("top_n_retweets_10_metrics_true",
-                              top_10_retweets$chart)
+                              results_metrics_true$chart)
+})
+
+test_that("ggplot2 plot has expected output (metrics = FALSE)", {
+  vdiffr::expect_doppelganger("top_n_retweets_10_metrics_false",
+                              results_metrics_false$chart)
 })
 
 
-# Disconnect from database
+# Disconnect from database ####
+
 DBI::dbDisconnect(sqlite_con)
