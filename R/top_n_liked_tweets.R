@@ -10,7 +10,8 @@
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
 #' @param n Number of tweets to be plotted. Note, ties will be included.
-#'   Default value is 10.
+#'   Default value is 10. Recommended value to ensure clear visualisation is
+#'   <= 10.
 #'
 #' @param tweet_chars Number of characters of the tweet text to be displayed.
 #'

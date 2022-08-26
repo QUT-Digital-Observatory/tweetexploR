@@ -14,7 +14,8 @@ The database contains a collection of tweets in relational tables. This can
 be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
 \item{n}{Number of accounts to be plotted. Note, ties will be included.
-Default value is 10.}
+Default value is 10. Recommended value to ensure clear visualisation is
+<= 30.}
 
 \item{return_data}{Should the data underlying the chart be returned?
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed

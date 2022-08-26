@@ -21,7 +21,8 @@ The database contains a collection of tweets in relational tables. This can
 be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
 \item{n}{Number of tweets to be plotted. Note, ties will be included.
-Default value is 10.}
+Default value is 10. Recommended value to ensure clear visualisation is
+<= 10.}
 
 \item{tweet_chars}{Number of characters of the tweet text to be displayed.}
 

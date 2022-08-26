@@ -11,7 +11,8 @@
 #'   be created with [tweetexploR::connect_to_sqlite_db()].
 #'
 #' @param n Number of accounts to be plotted. Note, ties will be included.
-#'   Default value is 10.
+#'   Default value is 10. Recommended value to ensure clear visualisation is
+#'   <= 30.
 #'
 #' @param return_data Should the data underlying the chart be returned?
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed

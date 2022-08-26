@@ -22,7 +22,8 @@ The database contains a collection of tweets in relational tables. This can
 be created with \code{\link[=connect_to_sqlite_db]{connect_to_sqlite_db()}}.}
 
 \item{n}{Number of retweets to be plotted. Note, ties will be included.
-Default value is 10.}
+Default value is 10. Recommended value to ensure clear visualisation is
+<= 10.}
 
 \item{metrics}{Should Twitter metrics be used to calculate the number of
 times each tweet was retweeted? The default, \code{FALSE}, calculates the number
