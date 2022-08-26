@@ -2,6 +2,8 @@
 sqlite_con <- connect_to_sqlite_db(test_path("fixtures", "auspol-test.db"))
 
 
+# Tests for when return_data = FALSE
+
 test_that("result is a ggplot2 object (hourly plot)", {
   expect_true(ggplot2::is.ggplot(num_users_by_timeperiod(sqlite_con, "hour")))
 })
@@ -32,6 +34,98 @@ test_that("ggplot2 plot has expected output (daily plot)", {
 test_that("ggplot2 plot has expected output (monthly plot)", {
   vdiffr::expect_doppelganger("num_users_by_timeperiod_month",
                               num_users_by_timeperiod(sqlite_con, "month"))
+})
+
+
+# Tests for when return_data == TRUE
+
+test_that("list of length 2 is created as expected (hourly plot)", {
+  results_hourly <- num_users_by_timeperiod(sqlite_con, "hour",
+                                            return_data = TRUE)
+  expect_type(results_hourly, "list")
+  expect_equal(2, length(results_hourly))
+})
+
+
+test_that("first element of list (chart) is a list (hourly plot)", {
+  results_hourly <- num_users_by_timeperiod(sqlite_con, "hour",
+                                            return_data = TRUE)
+  expect_type(results_hourly$chart, "list")
+})
+
+
+test_that("second element of list (data) is a tibble (hourly plot)", {
+  results_hourly <- num_users_by_timeperiod(sqlite_con, "hour",
+                                            return_data = TRUE)
+  expect_true(tibble::is_tibble(results_hourly$data))
+})
+
+
+test_that("ggplot2 plot has expected output (hourly plot)", {
+  results_hourly <- num_users_by_timeperiod(sqlite_con, "hour",
+                                            return_data = TRUE)
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_hour",
+                              results_hourly$chart)
+})
+
+
+test_that("list of length 2 is created as expected (daily plot)", {
+  results_daily <- num_users_by_timeperiod(sqlite_con, "day",
+                                            return_data = TRUE)
+  expect_type(results_daily, "list")
+  expect_equal(2, length(results_daily))
+})
+
+
+test_that("first element of list (chart) is a list (daily plot)", {
+  results_daily <- num_users_by_timeperiod(sqlite_con, "day",
+                                           return_data = TRUE)
+  expect_type(results_daily$chart, "list")
+})
+
+
+test_that("second element of list (data) is a data frame (daily plot)", {
+  results_daily <- num_users_by_timeperiod(sqlite_con, "day",
+                                           return_data = TRUE)
+  expect_true(is.data.frame(results_daily$data))
+})
+
+
+test_that("ggplot2 plot has expected output (daily plot)", {
+  results_daily <- num_users_by_timeperiod(sqlite_con, "day",
+                                           return_data = TRUE)
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_day",
+                              results_daily$chart)
+})
+
+
+test_that("list of length 2 is created as expected (monthly plot)", {
+  results_monthly <- num_users_by_timeperiod(sqlite_con, "month",
+                                             return_data = TRUE)
+  expect_type(results_monthly, "list")
+  expect_equal(2, length(results_monthly))
+})
+
+
+test_that("first element of list (chart) is a list (monthly plot)", {
+  results_monthly <- num_users_by_timeperiod(sqlite_con, "month",
+                                             return_data = TRUE)
+  expect_type(results_monthly$chart, "list")
+})
+
+
+test_that("second element of list (data) is a tibble (monthly plot)", {
+  results_monthly <- num_users_by_timeperiod(sqlite_con, "month",
+                                             return_data = TRUE)
+  expect_true(tibble::is_tibble(results_monthly$data))
+})
+
+
+test_that("ggplot2 plot has expected output (monthly plot)", {
+  results_monthly <- num_users_by_timeperiod(sqlite_con, "month",
+                                             return_data = TRUE)
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_month",
+                              results_monthly$chart)
 })
 
 

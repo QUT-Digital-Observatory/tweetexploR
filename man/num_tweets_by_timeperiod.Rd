@@ -49,7 +49,7 @@ For monthly charts, provide a character string in the format
 
 \item{return_data}{Should the data underlying the chart be returned?
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
-in the second element}
+in the second element, \code{data}, of the returned list.}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_path]{ggplot2::geom_line()}} for hourly and
 daily charts, or \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}} for monthly charts.}
@@ -84,6 +84,9 @@ my_plot <- num_tweets_by_timeperiod(sqlite_con, period = "month",
 num_tweets_by_timeperiod(sqlite_con, period = "hour", colour = "blue")
 
 num_tweets_by_timeperiod(sqlite_con, period = "month", fill = "blue")
+
+results <- num_tweets_by_timeperiod(sqlite_con, period = "hour",
+  return_data = TRUE)
 
 }
 

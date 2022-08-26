@@ -41,10 +41,17 @@
 #'   For monthly charts, provide a character string in the format
 #'   `"%Y-%m"`. For example `"2022-06"`
 #'
+#' @param return_data Should the data underlying the chart be returned?
+#'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
+#'   in the second element, `data`, of the returned list.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_line()] for hourly and
 #'   daily charts, or [ggplot2::geom_col()] for monthly charts.
 #'
-#' @return ggplot2 plot.
+#' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
+#'   first element, `chart`, being a ggplot2 plot, and the second element,
+#'   `data`, being the underlying data for the ggplot2 plot in the form of a
+#'   data frame.
 #'
 #' @importFrom dplyr mutate filter n_distinct group_by summarise
 #'
@@ -75,11 +82,18 @@
 #'
 #' num_users_by_timeperiod(sqlite_con, period = "month", fill = "blue")
 #'
+#' results <- num_users_by_timeperiod(sqlite_con, period = "hour",
+#'   return_data = TRUE)
+#'
 #' }
 #'
 #' @export
 
-num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
+num_users_by_timeperiod <- function(sqlite_con,
+                                    period,
+                                    from,
+                                    to,
+                                    return_data = FALSE, ...) {
 
   # Check if `period` is valid
   check_if_period_is_valid(period)
@@ -102,7 +116,8 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
 
   # Plot the data (for hourly)
   if (period == "hour") {
-    DBI::dbGetQuery(sqlite_con,
+
+    chart_data <- DBI::dbGetQuery(sqlite_con,
       "SELECT author_id, datetime(created_at) as `created_at_datetime`
       FROM tweet;") %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
@@ -111,24 +126,38 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
       filter(.data$created_at_hour >= ymd_hms(from) &
                .data$created_at_hour <= ymd_hms(to)) %>%
       group_by(.data$created_at_hour) %>%
-      summarise(accounts = n_distinct(.data$author_id)) %>%
-      ggplot(aes(x = .data$created_at_hour, y = .data$accounts)) +
+      summarise(accounts = n_distinct(.data$author_id))
+
+    chart <- ggplot(chart_data,
+                    aes(x = .data$created_at_hour, y = .data$accounts)) +
       geom_line(group = 1, ...) +
       labs(title = "Number of unique accounts that tweeted per hour",
            x = "Hour",
            y = "Number of accounts") +
       configure_y_axis() +
       configure_ggplot_theme()
+
+    if (return_data == TRUE) {
+      return(list(chart = chart, data = chart_data))
+    }
+
+    else if (return_data == FALSE) {
+      return(chart)
+    }
+
   }
 
   # Plot the data (for daily)
   else if (period == "day") {
-    DBI::dbGetQuery(sqlite_con,
+
+    chart_data <- DBI::dbGetQuery(sqlite_con,
     "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
     FROM tweet
     GROUP BY day;") %>%
-      filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
-      ggplot(aes(x = ymd(.data$day), y = .data$accounts)) +
+      filter(.data$day >= ymd(from) & .data$day <= ymd(to))
+
+    chart <- ggplot(chart_data,
+                    aes(x = ymd(.data$day), y = .data$accounts)) +
       geom_line(group = 1, ...) +
       labs(title = "Number of unique accounts that tweeted per day",
            x = "Day",
@@ -136,11 +165,21 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
       scale_x_date(date_labels = "%d/%m/%Y") +
       configure_y_axis() +
       configure_ggplot_theme()
+
+    if (return_data == TRUE) {
+      return(list(chart = chart, data = chart_data))
+    }
+
+    else if (return_data == FALSE) {
+      return(chart)
+    }
+
   }
 
   # Plot the data (for monthly)
   else if (period == "month") {
-    DBI::dbGetQuery(sqlite_con,
+
+    chart_data <- DBI::dbGetQuery(sqlite_con,
     "SELECT count(distinct(author_id)) as `accounts`, date(created_at) as `day`
     FROM tweet
     GROUP BY day;") %>%
@@ -148,8 +187,10 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
       group_by(.data$month) %>%
       summarise(accounts = sum(.data$accounts)) %>%
       filter(.data$month >= ymd(paste0(from, "-01")) &
-               .data$month <= ymd(paste0(to, "-01"))) %>%
-      ggplot(aes(x = .data$month, y = .data$accounts)) +
+               .data$month <= ymd(paste0(to, "-01")))
+
+    chart <- ggplot(chart_data,
+                    aes(x = .data$month, y = .data$accounts)) +
       geom_col(...) +
       labs(title = "Number of unique accounts that tweeted per month",
            x = "Month",
@@ -157,6 +198,15 @@ num_users_by_timeperiod <- function(sqlite_con, period, from, to, ...) {
       scale_x_date(date_labels = "%b %Y") +
       configure_y_axis() +
       configure_ggplot_theme()
+
+    if (return_data == TRUE) {
+      return(list(chart = chart, data = chart_data))
+    }
+
+    else if (return_data == FALSE) {
+      return(chart)
+    }
+
   }
 
 }

@@ -4,7 +4,7 @@
 \alias{num_users_by_timeperiod}
 \title{Plot number of unique users that tweeted per hour, day or month}
 \usage{
-num_users_by_timeperiod(sqlite_con, period, from, to, ...)
+num_users_by_timeperiod(sqlite_con, period, from, to, return_data = FALSE, ...)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -40,11 +40,18 @@ For daily charts, provide a character string in the format
 For monthly charts, provide a character string in the format
 \code{"\%Y-\%m"}. For example \code{"2022-06"}}
 
+\item{return_data}{Should the data underlying the chart be returned?
+The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
+in the second element, \code{data}, of the returned list.}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_path]{ggplot2::geom_line()}} for hourly and
 daily charts, or \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}} for monthly charts.}
 }
 \value{
-ggplot2 plot.
+ggplot2 plot. If \code{return_data = TRUE}, returns a named list with the
+first element, \code{chart}, being a ggplot2 plot, and the second element,
+\code{data}, being the underlying data for the ggplot2 plot in the form of a
+data frame.
 }
 \description{
 Create a ggplot2 chart of the number of unique users that
@@ -73,6 +80,9 @@ my_plot <- num_users_by_timeperiod(sqlite_con, period = "month",
 num_users_by_timeperiod(sqlite_con, period = "day", colour = "red")
 
 num_users_by_timeperiod(sqlite_con, period = "month", fill = "blue")
+
+results <- num_users_by_timeperiod(sqlite_con, period = "hour",
+  return_data = TRUE)
 
 }
 

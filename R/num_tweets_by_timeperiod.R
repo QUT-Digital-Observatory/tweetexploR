@@ -43,7 +43,7 @@
 #'
 #' @param return_data Should the data underlying the chart be returned?
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
-#'   in the second element
+#'   in the second element, `data`, of the returned list.
 #'
 #' @param ... Other arguments passed on to [ggplot2::geom_line()] for hourly and
 #'   daily charts, or [ggplot2::geom_col()] for monthly charts.
@@ -78,6 +78,9 @@
 #' num_tweets_by_timeperiod(sqlite_con, period = "hour", colour = "blue")
 #'
 #' num_tweets_by_timeperiod(sqlite_con, period = "month", fill = "blue")
+#'
+#' results <- num_tweets_by_timeperiod(sqlite_con, period = "hour",
+#'   return_data = TRUE)
 #'
 #' }
 #'
