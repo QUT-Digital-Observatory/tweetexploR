@@ -33,7 +33,15 @@ For daily charts, provide a character string in the format
 \code{"\%Y-\%m-\%d"}. For example \code{"2022-06-20"}
 
 For monthly charts, provide a character string in the format
-\code{"\%Y-\%m"}. For example \code{"2022-06"}}
+\code{"\%Y-\%m"}. For example \code{"2022-06"}
+
+Recommended subsets for each time period in order to ensure clear
+visualisations are as follows:
+\itemize{
+\item Hourly: 1-3 days, ideally no more than 7 days;
+\item Daily: Up to 1 month;
+\item Monthly: 1-2 years.
+}}
 
 \item{to}{Optional parameter to subset the data to tweets that were created
 on or before the specified date and/or time in \href{https://en.wikipedia.org/wiki/Coordinated_Universal_Time}{Coordinated Universal Time (UCT)}.
@@ -45,7 +53,15 @@ For daily charts, provide a character string in the format
 \code{"\%Y-\%m-\%d"}. For example \code{"2022-06-20"}
 
 For monthly charts, provide a character string in the format
-\code{"\%Y-\%m"}. For example \code{"2022-06"}}
+\code{"\%Y-\%m"}. For example \code{"2022-06"}
+
+Recommended subsets for each time period in order to ensure clear
+visualisations are as follows:
+\itemize{
+\item Hourly: 1-3 days, ideally no more than 7 days;
+\item Daily: Up to 1 month;
+\item Monthly: 1-2 years.
+}}
 
 \item{return_data}{Should the data underlying the chart be returned?
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed

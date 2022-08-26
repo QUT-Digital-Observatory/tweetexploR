@@ -28,6 +28,12 @@
 #'   For monthly charts, provide a character string in the format
 #'   `"%Y-%m"`. For example `"2022-06"`
 #'
+#'   Recommended subsets for each time period in order to ensure clear
+#'   visualisations are as follows:
+#'   - Hourly: 1-3 days, ideally no more than 7 days;
+#'   - Daily: Up to 1 month;
+#'   - Monthly: 1-2 years.
+#'
 #' @param to Optional parameter to subset the data to tweets that were created
 #'   on or before the specified date and/or time in [Coordinated Universal Time
 #'   (UCT)](https://en.wikipedia.org/wiki/Coordinated_Universal_Time).
@@ -40,6 +46,12 @@
 #'
 #'   For monthly charts, provide a character string in the format
 #'   `"%Y-%m"`. For example `"2022-06"`
+#'
+#'   Recommended subsets for each time period in order to ensure clear
+#'   visualisations are as follows:
+#'   - Hourly: 1-3 days, ideally no more than 7 days;
+#'   - Daily: Up to 1 month;
+#'   - Monthly: 1-2 years.
 #'
 #' @param return_data Should the data underlying the chart be returned?
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
