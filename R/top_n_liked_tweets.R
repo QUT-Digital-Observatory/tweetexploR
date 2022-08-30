@@ -22,6 +22,9 @@
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
 #'   in the second element, `data`, of the returned list.
 #'
+#' @param exclude_RT Should retweets be excluded from the calculations?
+#'   The default is `FALSE`.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_col()].
 #'
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
@@ -47,40 +50,84 @@
 #'
 #' top_n_liked_tweets(sqlite_con, fill = "blue")
 #'
-#' top_50_liked_tweets <- top_n_hashtags(sqlite_con, n = 50, return_data = TRUE)
+#' top_50_liked_tweets <- top_n_liked_tweets(sqlite_con, n = 50, return_data = TRUE)
+#'
+#' top_10_non_retweets <- top_n_liked_tweets(sqlite_con, exclude_RT = TRUE)
 #'
 #' }
 #'
 #' @export
 
-top_n_liked_tweets <- function(sqlite_con, n = 10, tweet_chars = 80,
-                               chars_per_line = 50, return_data = FALSE, ...) {
+top_n_liked_tweets <- function(sqlite_con, n = 10,
+                               tweet_chars = 80,
+                               chars_per_line = 50,
+                               return_data = FALSE,
+                               exclude_RT = FALSE, ...) {
 
-  chart_data <- DBI::dbGetQuery(sqlite_con,
-  "SELECT id, like_count, text
-  FROM tweet;") %>%
-    slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
-    as.data.frame()
+  if (exclude_RT == FALSE) {
 
-  chart <- ggplot(chart_data, aes(x = reorder(substr(.data$text, 1, tweet_chars),
-                                              .data$like_count),
-                                  y = .data$like_count)) +
-    geom_col(...) +
-    labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
-         x = "Tweet",
-         y = "Number of likes") +
-    scale_x_discrete(labels = label_wrap(chars_per_line)) +
-    configure_y_axis() +
-    coord_flip() +
-    configure_ggplot_theme() +
-    theme(axis.title.y = element_blank())
+    chart_data <- DBI::dbGetQuery(sqlite_con,
+    "SELECT id, like_count, text
+    FROM tweet;") %>%
+      slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
+      as.data.frame()
 
-  if (return_data == TRUE) {
-    return(list(chart = chart, data = chart_data))
+    chart <- ggplot(chart_data,
+                    aes(x = reorder(substr(.data$text, 1, tweet_chars),
+                                    .data$like_count),
+                        y = .data$like_count)) +
+      geom_col(...) +
+      labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
+           x = "Tweet",
+           y = "Number of likes") +
+      scale_x_discrete(labels = label_wrap(chars_per_line)) +
+      configure_y_axis() +
+      coord_flip() +
+      configure_ggplot_theme() +
+      theme(axis.title.y = element_blank())
+
+    if (return_data == TRUE) {
+      return(list(chart = chart, data = chart_data))
+    }
+
+    else if (return_data == FALSE) {
+      return(chart)
+    }
+
   }
 
-  else if (return_data == FALSE) {
-    return(chart)
+  else if (exclude_RT == TRUE) {
+
+    chart_data <- DBI::dbGetQuery(sqlite_con,
+    "SELECT id, like_count, text
+    FROM tweet
+    WHERE retweeted_tweet_id IS NULL;") %>%
+      slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
+      as.data.frame()
+
+    chart <- ggplot(chart_data,
+                    aes(x = reorder(substr(.data$text, 1, tweet_chars),
+                                    .data$like_count),
+                        y = .data$like_count)) +
+      geom_col(...) +
+      labs(title = paste0("Top ", n, " like tweets (Twitter metrics; excluding retweets)"),
+           x = "Tweet",
+           y = "Number of likes") +
+      scale_x_discrete(labels = label_wrap(chars_per_line)) +
+      configure_y_axis() +
+      coord_flip() +
+      configure_ggplot_theme() +
+      theme(axis.title.y = element_blank())
+
+    if (return_data == TRUE) {
+      return(list(chart = chart, data = chart_data))
+    }
+
+    else if (return_data == FALSE) {
+      return(chart)
+    }
+
   }
 
 }
+

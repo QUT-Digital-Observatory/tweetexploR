@@ -10,6 +10,7 @@ top_n_liked_tweets(
   tweet_chars = 80,
   chars_per_line = 50,
   return_data = FALSE,
+  exclude_RT = FALSE,
   ...
 )
 }
@@ -33,6 +34,9 @@ per line without breaking a word.}
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
 in the second element, \code{data}, of the returned list.}
 
+\item{exclude_RT}{Should retweets be excluded from the calculations?
+The default is \code{FALSE}.}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
@@ -52,7 +56,9 @@ top_n_liked_tweets(sqlite_con, 20)
 
 top_n_liked_tweets(sqlite_con, fill = "blue")
 
-top_50_liked_tweets <- top_n_hashtags(sqlite_con, n = 50, return_data = TRUE)
+top_50_liked_tweets <- top_n_liked_tweets(sqlite_con, n = 50, return_data = TRUE)
+
+top_10_non_retweets <- top_n_liked_tweets(sqlite_con, exclude_RT = TRUE)
 
 }
 
