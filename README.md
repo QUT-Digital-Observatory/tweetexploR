@@ -8,16 +8,18 @@ tweetexploR is an R package for exploring and visualising a collection of Tweets
 
 tweetexploR allows you to quickly answer questions such as:
 
--   How many tweets are there per hour/day/month?
--   How many times did each user post a tweet?
--   How many unique users posted tweets per hour/day/month?
--   What are the most frequently used hashtags?
--   Which tweets were liked the most?
--   Who is being mentioned the most?
--   Who is being replied to the most?
--   Which tweets were retweeted the most?
+| Question                                                | Function name                |
+|---------------------------------------------------------|------------------------------|
+| How many tweets are there per hour/day/month?           | `num_tweets_by_timeperiod()` |
+| How many times did each user post a tweet?              | `num_tweets_by_username()`   |
+| How many unique users posted tweets per hour/day/month? | `num_users_by_timeperiod()`  |
+| What are the most frequently used hashtags?             | `top_n_hashtags()`           |
+| Which tweets were liked the most?                       | `top_n_liked_tweets()`       |
+| Who is being mentioned the most?                        | `top_n_mentions()`           |
+| Who is being replied to the most?                       | `top_n_replied_to_tweets()`  |
+| Which tweets were retweeted the most?                   | `top_n_retweeted_tweets()`   |
 
-Under the hood, tweetexploR uses [ggplot2](https://ggplot2.tidyverse.org/) to create nicely formatted charts, and even allows you to tweak them to suit your own preferences. tweetexploR also gives you the option to export the data underlying each visualisation.
+Under the hood, tweetexploR uses [ggplot2](https://ggplot2.tidyverse.org/) to create nicely formatted charts, and even allows you to tweak them to suit your own preferences. tweetexploR also gives you the option to export the data underlying each visualisation by using the `return_data = TRUE` parameter.
 
 ## Installation
 
@@ -68,18 +70,24 @@ You can [save your chart](https://ggplot2.tidyverse.org/reference/ggsave.html) u
 ggsave(filename = "my_awesome_chart.png", width = 12, height = 8, units = "cm")
 ```
 
-tweetexploR currently supports the following analyses:
+The following code creates a line chart of the number of tweets per day and saves it as an object in your environment called `tweets_per_day`. It will also return the underlying data as a data frame by using `return_data = TRUE`. Again, the code assumes that you called your SQLite database connection `sqlite_con`.
 
-| Question                                                | Function name                |
-|---------------------------------------------------------|------------------------------|
-| How many tweets are there per hour/day/month?           | `num_tweets_by_timeperiod()` |
-| How many times did each user post a tweet?              | `num_tweets_by_username()`   |
-| How many unique users posted tweets per hour/day/month? | `num_users_by_timeperiod()`  |
-| What are the most frequently used hashtags?             | `top_n_hashtags()`           |
-| Which tweets were liked the most?                       | `top_n_liked_tweets()`       |
-| Who is being mentioned the most?                        | `top_n_mentions()`           |
-| Who is being replied to the most?                       | `top_n_replied_to_tweets()`  |
-| Which tweets were retweeted the most?                   | `top_n_retweeted_tweets()`   |
+```r
+library(tweetexploR)
+tweets_per_day <- num_tweets_by_timeperiod(sqlite_con, period = "day", return_data = TRUE)
+```
+
+To access the chart:
+
+```r
+tweets_per_day$chart
+```
+
+To access the underlying data as a data frame:
+
+```r
+tweets_per_day$data
+```
 
 ### 3. Disconnect from your database
 
