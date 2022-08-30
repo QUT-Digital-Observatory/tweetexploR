@@ -18,6 +18,7 @@ tweetexploR allows you to quickly answer questions such as:
 | Who is being mentioned the most?                        | `top_n_mentions()`           |
 | Who is being replied to the most?                       | `top_n_replied_to_tweets()`  |
 | Which tweets were retweeted the most?                   | `top_n_retweeted_tweets()`   |
+| What are the engagement metrics for the tweets?         | `engagement_summary()`       |
 
 Under the hood, tweetexploR uses [ggplot2](https://ggplot2.tidyverse.org/) to create nicely formatted charts, and even allows you to tweak them to suit your own preferences. tweetexploR also gives you the option to export the data underlying each visualisation by using the `return_data = TRUE` parameter.
 
@@ -87,6 +88,13 @@ To access the underlying data as a data frame:
 
 ```r
 tweets_per_day$data
+```
+
+The following code generates a data frame that summarises the engagement metrics for all tweets in the database. Again, the code assumes that you called your SQLite database connection `sqlite_con`.
+
+```r
+library(tweetexploR)
+engagement_summary <- engagement_summary(sqlite_con)
 ```
 
 ### 3. Disconnect from your database
