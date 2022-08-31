@@ -108,6 +108,9 @@ num_tweets_by_timeperiod(sqlite_con, period = "month", fill = "blue")
 results <- num_tweets_by_timeperiod(sqlite_con, period = "hour",
   return_data = TRUE)
 
+results <- num_tweets_by_timeperiod(sqlite_con, period = "day",
+  exclude_RT == TRUE)
+
 }
 
 }
