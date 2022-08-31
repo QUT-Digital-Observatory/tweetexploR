@@ -17,6 +17,9 @@
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
 #'   in the second element, `data`, of the returned list.
 #'
+#' @param exclude_RT Should retweets be excluded from the calculations?
+#'   The default is `FALSE`.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_col()].
 #'
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
@@ -41,22 +44,51 @@
 #'
 #' results <- num_tweets_by_username(sqlite_con, return_data = TRUE)
 #'
+#' results <- num_tweets_by_username(sqlite_con, exclude_RT = TRUE)
+#'
 #' }
 #'
 #' @export
 
 num_tweets_by_username <- function(sqlite_con,
                                    n = 10,
-                                   return_data = FALSE, ...) {
+                                   return_data = FALSE,
+                                   exclude_RT = FALSE, ...) {
 
-  chart_data <- DBI::dbGetQuery(sqlite_con,
-    "SELECT count(*) as `tweet_count`, username
+  # When exclude_RT == FALSE construct query and chart title
+  if (exclude_RT == FALSE) {
+
+    query <- "SELECT count(*) as `tweet_count`, username
     FROM tweet
     LEFT JOIN (
       SELECT username, id
       FROM user ) user
     ON user.id = tweet.author_id
-    GROUP BY username;") %>%
+    GROUP BY username;"
+
+    title <- paste0("Top ", n, " tweet authors by number of tweets")
+
+  }
+
+  # When exclude_RT == TRUE construct query and chart title
+  if (exclude_RT == TRUE) {
+
+    query <- "SELECT count(*) as `tweet_count`, username
+    FROM tweet
+    LEFT JOIN (
+      SELECT username, id
+      FROM user ) user
+    ON user.id = tweet.author_id
+    WHERE retweeted_tweet_id IS NULL
+    GROUP BY username;"
+
+    title <- paste0("Top ",
+                    n,
+                    "tweet authors by number of tweets (excluding retweets)")
+
+  }
+
+  chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
     slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
     as.data.frame()
 
@@ -64,7 +96,7 @@ num_tweets_by_username <- function(sqlite_con,
                   aes(x = reorder(.data$username, .data$tweet_count),
                       y = .data$tweet_count)) +
     geom_col(...) +
-    labs(title = paste0("Top ", n, " tweet authors by number of tweets"),
+    labs(title = title,
          x = "Username",
          y = "Number of tweets") +
     coord_flip() +

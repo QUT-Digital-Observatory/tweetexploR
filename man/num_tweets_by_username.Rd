@@ -4,7 +4,13 @@
 \alias{num_tweets_by_username}
 \title{Plot number of tweets for top n usernames}
 \usage{
-num_tweets_by_username(sqlite_con, n = 10, return_data = FALSE, ...)
+num_tweets_by_username(
+  sqlite_con,
+  n = 10,
+  return_data = FALSE,
+  exclude_RT = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -20,6 +26,9 @@ Default value is 10. Recommended value to ensure clear visualisation is
 \item{return_data}{Should the data underlying the chart be returned?
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
 in the second element, \code{data}, of the returned list.}
+
+\item{exclude_RT}{Should retweets be excluded from the calculations?
+The default is \code{FALSE}.}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
@@ -43,6 +52,8 @@ my_plot <- num_tweets_by_username(sqlite_con, 20)
 num_tweets_by_username(sqlite_con, fill = "blue")
 
 results <- num_tweets_by_username(sqlite_con, return_data = TRUE)
+
+results <- num_tweets_by_username(sqlite_con, exclude_RT = TRUE)
 
 }
 
