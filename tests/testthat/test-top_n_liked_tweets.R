@@ -42,7 +42,7 @@ test_that("ggplot2 plot has expected output", {
 })
 
 
-# Tests for when exclude_RT = TRUE ###
+# Tests for when exclude_RT = TRUE ####
 
 test_that("result is a ggplot2 object (exclude_RT = TRUE)", {
   expect_true(ggplot2::is.ggplot(top_n_liked_tweets(sqlite_con,
