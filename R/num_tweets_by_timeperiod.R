@@ -134,16 +134,25 @@ num_tweets_by_timeperiod <- function(sqlite_con,
   # Plot the data (for hourly)
   if (period == "hour") {
 
-    # Construct query
+    # When exclude_RT == FALSE construct query and chart title
     if (exclude_RT == FALSE) {
+
       query <- "SELECT id, datetime(created_at) as `created_at_datetime`
-    FROM tweet;"
+               FROM tweet;"
+
+      title <- "Number of tweets per hour"
+
     }
 
+    # When exclude_RT == TRUE construct query and chart title
     else if (exclude_RT == TRUE) {
+
       query <- "SELECT id, datetime(created_at) as `created_at_datetime`
-    FROM tweet
-    WHERE retweeted_tweet_id IS NULL;"
+               FROM tweet
+               WHERE retweeted_tweet_id IS NULL;"
+
+      title <- "Number of tweets per hour (excluding retweets)"
+
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
@@ -159,7 +168,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
     chart <- ggplot(chart_data,
                     aes(x = .data$created_at_hour, y = .data$tweets)) +
       geom_line(group = 1, ...) +
-      labs(title = "Number of tweets per hour",
+      labs(title = title,
            x = "Hour",
            y = "Number of tweets") +
       configure_y_axis() +
@@ -178,18 +187,27 @@ num_tweets_by_timeperiod <- function(sqlite_con,
   # Plot the data (for daily)
   else if (period == "day") {
 
-    # Construct query
+    # When exclude_RT == FALSE construct query and chart title
     if (exclude_RT == FALSE) {
+
       query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
       GROUP BY day;"
+
+      title <- "Number of tweets per day"
+
     }
 
+    # When exclude_RT == TRUE construct query and chart title
     else if (exclude_RT == TRUE) {
+
       query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
       WHERE retweeted_tweet_id IS NULL
       GROUP BY day;"
+
+      title <- "Number of tweets per day (excluding retweets)"
+
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
@@ -197,7 +215,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
 
     chart <- ggplot(chart_data, aes(x = ymd(.data$day), y = .data$tweets)) +
       geom_line(group = 1, ...) +
-      labs(title = "Number of tweets per day",
+      labs(title = title,
            x = "Day",
            y = "Number of tweets") +
       scale_x_date(date_labels = "%d/%m/%Y") +
@@ -217,18 +235,27 @@ num_tweets_by_timeperiod <- function(sqlite_con,
   # Plot the data (for monthly)
   else if (period == "month") {
 
-    # Construct query
+    # When exclude_RT == FALSE construct query and chart title
     if (exclude_RT == FALSE) {
+
       query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
       GROUP BY day;"
+
+      title <- "Number of tweets per month"
+
     }
 
+    # When exclude_RT == TRUE construct query and chart title
     else if (exclude_RT == TRUE) {
+
       query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
       WHERE retweeted_tweet_id IS NULL
       GROUP BY day;"
+
+      title <- "Number of tweets per month (excluding retweets)"
+
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
@@ -242,7 +269,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
 
     chart <- ggplot(chart_data, aes(x = .data$month, y = .data$tweets)) +
       geom_col(...) +
-      labs(title = "Number of tweets per month",
+      labs(title = title,
           x = "Month",
           y = "Number of tweets") +
       scale_x_date(date_labels = "%b %Y") +

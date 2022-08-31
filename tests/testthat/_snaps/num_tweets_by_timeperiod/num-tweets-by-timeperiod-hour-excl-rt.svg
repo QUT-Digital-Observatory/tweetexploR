@@ -53,6 +53,6 @@
 <text x='692.60' y='556.75' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='36.70px' lengthAdjust='spacingAndGlyphs'>2022-07</text>
 <text x='376.66' y='568.44' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='21.68px' lengthAdjust='spacingAndGlyphs'>Hour</text>
 <text transform='translate(12.36,282.87) rotate(-90)' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='78.38px' lengthAdjust='spacingAndGlyphs'>Number of tweets</text>
-<text x='38.79' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='130.24px' lengthAdjust='spacingAndGlyphs'>Number of tweets per hour</text>
+<text x='38.79' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='231.75px' lengthAdjust='spacingAndGlyphs'>Number of tweets per hour (excluding retweets)</text>
 </g>
 </svg>

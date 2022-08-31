@@ -51,6 +51,6 @@
 <text x='692.71' y='556.75' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='50.05px' lengthAdjust='spacingAndGlyphs'>01/07/2022</text>
 <text x='376.66' y='568.44' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='17.79px' lengthAdjust='spacingAndGlyphs'>Day</text>
 <text transform='translate(12.36,282.87) rotate(-90)' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='78.38px' lengthAdjust='spacingAndGlyphs'>Number of tweets</text>
-<text x='38.79' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='125.97px' lengthAdjust='spacingAndGlyphs'>Number of tweets per day</text>
+<text x='38.79' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='227.47px' lengthAdjust='spacingAndGlyphs'>Number of tweets per day (excluding retweets)</text>
 </g>
 </svg>
