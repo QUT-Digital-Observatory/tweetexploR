@@ -4,7 +4,15 @@
 \alias{num_users_by_timeperiod}
 \title{Plot number of unique users that tweeted per hour, day or month}
 \usage{
-num_users_by_timeperiod(sqlite_con, period, from, to, return_data = FALSE, ...)
+num_users_by_timeperiod(
+  sqlite_con,
+  period,
+  from,
+  to,
+  return_data = FALSE,
+  exclude_RT = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -60,6 +68,9 @@ visualisations are as follows:
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
 in the second element, \code{data}, of the returned list.}
 
+\item{exclude_RT}{Should retweets be excluded from the calculations?
+The default is \code{FALSE}.}
+
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_path]{ggplot2::geom_line()}} for hourly and
 daily charts, or \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}} for monthly charts.}
 }
@@ -99,6 +110,9 @@ num_users_by_timeperiod(sqlite_con, period = "month", fill = "blue")
 
 results <- num_users_by_timeperiod(sqlite_con, period = "hour",
   return_data = TRUE)
+
+results <- num_users_by_timeperiod(sqlite_con, period = "hour",
+  return_data = TRUE, exclude_RT = TRUE)
 
 }
 

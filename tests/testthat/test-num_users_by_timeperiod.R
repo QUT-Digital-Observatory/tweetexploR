@@ -120,6 +120,32 @@ test_that("ggplot2 plot has expected output (monthly plot)", {
 })
 
 
+# Tests for when exclude_RT = TRUE ####
+
+test_that("ggplot2 plot has expected output (hourly plot excl RT)", {
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_hour_excl_RT",
+                              num_users_by_timeperiod(sqlite_con,
+                                                      period = "hour",
+                                                      exclude_RT = TRUE))
+})
+
+
+test_that("ggplot2 plot has expected output (daily plot excl RT)", {
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_day_excl_RT",
+                              num_users_by_timeperiod(sqlite_con,
+                                                      period = "day",
+                                                      exclude_RT = TRUE))
+})
+
+
+test_that("ggplot2 plot has expected output (monthly plot excl RT)", {
+  vdiffr::expect_doppelganger("num_users_by_timeperiod_month_excl_RT",
+                              num_users_by_timeperiod(sqlite_con,
+                                                      period = "month",
+                                                      exclude_RT = TRUE))
+})
+
+
 # Disconnect from database ####
 
 DBI::dbDisconnect(sqlite_con)
