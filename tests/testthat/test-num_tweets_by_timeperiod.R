@@ -120,7 +120,7 @@ test_that("ggplot2 plot has expected output (monthly plot)", {
 })
 
 
-# Tests for when exclude_RT == TRUE
+# Tests for when exclude_RT == TRUE ####
 
 test_that("ggplot2 plot has expected output (hourly plot excl RT)", {
   vdiffr::expect_doppelganger("num_tweets_by_timeperiod_hour_excl_RT",
