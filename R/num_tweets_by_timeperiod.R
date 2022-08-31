@@ -57,6 +57,9 @@
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
 #'   in the second element, `data`, of the returned list.
 #'
+#' @param exclude_RT Should retweets be excluded from the calculations?
+#'   The default is `FALSE`.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_line()] for hourly and
 #'   daily charts, or [ggplot2::geom_col()] for monthly charts.
 #'
@@ -94,6 +97,9 @@
 #' results <- num_tweets_by_timeperiod(sqlite_con, period = "hour",
 #'   return_data = TRUE)
 #'
+#' results <- num_tweets_by_timeperiod(sqlite_con, period = "day",
+#'   exclude_RT == TRUE)
+#'
 #' }
 #'
 #' @export
@@ -103,7 +109,8 @@ num_tweets_by_timeperiod <- function(sqlite_con,
                                      period,
                                      from,
                                      to,
-                                     return_data = FALSE, ...) {
+                                     return_data = FALSE,
+                                     exclude_RT = FALSE, ...) {
 
   # Check if `period` is valid
   check_if_period_is_valid(period)
@@ -127,9 +134,19 @@ num_tweets_by_timeperiod <- function(sqlite_con,
   # Plot the data (for hourly)
   if (period == "hour") {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-      "SELECT id, datetime(created_at) as `created_at_datetime`
-      FROM tweet;") %>%
+    # Construct query
+    if (exclude_RT == FALSE) {
+      query <- "SELECT id, datetime(created_at) as `created_at_datetime`
+    FROM tweet;"
+    }
+
+    else if (exclude_RT == TRUE) {
+      query <- "SELECT id, datetime(created_at) as `created_at_datetime`
+    FROM tweet
+    WHERE retweeted_tweet_id IS NULL;"
+    }
+
+    chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
       mutate(created_at_hour = floor_date(.data$created_at_datetime,
                                           unit = "hour")) %>%
@@ -161,10 +178,21 @@ num_tweets_by_timeperiod <- function(sqlite_con,
   # Plot the data (for daily)
   else if (period == "day") {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-      "SELECT count(*) as `tweets`, date(created_at) as `day`
+    # Construct query
+    if (exclude_RT == FALSE) {
+      query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
-      GROUP BY day;") %>%
+      GROUP BY day;"
+    }
+
+    else if (exclude_RT == TRUE) {
+      query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
+      FROM tweet
+      WHERE retweeted_tweet_id IS NULL
+      GROUP BY day;"
+    }
+
+    chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
       filter(.data$day >= ymd(from) & .data$day <= ymd(to))
 
     chart <- ggplot(chart_data, aes(x = ymd(.data$day), y = .data$tweets)) +
@@ -189,10 +217,21 @@ num_tweets_by_timeperiod <- function(sqlite_con,
   # Plot the data (for monthly)
   else if (period == "month") {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-      "SELECT count(*) as `tweets`, date(created_at) as `day`
+    # Construct query
+    if (exclude_RT == FALSE) {
+      query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
       FROM tweet
-      GROUP BY day;") %>%
+      GROUP BY day;"
+    }
+
+    else if (exclude_RT == TRUE) {
+      query <- "SELECT count(*) as `tweets`, date(created_at) as `day`
+      FROM tweet
+      WHERE retweeted_tweet_id IS NULL
+      GROUP BY day;"
+    }
+
+    chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
       mutate(month = floor_date(ymd(.data$day), "month")) %>%
       group_by(.data$month) %>%
       summarise(tweets = sum(.data$tweets)) %>%
