@@ -84,6 +84,6 @@
 <text x='568.98' y='556.75' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='30.59px' lengthAdjust='spacingAndGlyphs'>15,000</text>
 <text x='669.16' y='556.75' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='30.59px' lengthAdjust='spacingAndGlyphs'>20,000</text>
 <text x='480.86' y='568.44' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='69.48px' lengthAdjust='spacingAndGlyphs'>Number of likes</text>
-<text x='247.21' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='267.79px' lengthAdjust='spacingAndGlyphs'>Top 10 like tweets (Twitter metrics; excluding retweets)</text>
+<text x='247.21' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='273.91px' lengthAdjust='spacingAndGlyphs'>Top 10 liked tweets (Twitter metrics; excluding retweets)</text>
 </g>
 </svg>

@@ -64,46 +64,32 @@ top_n_liked_tweets <- function(sqlite_con, n = 10,
                                return_data = FALSE,
                                exclude_RT = FALSE, ...) {
 
+  # When exclude_RT == FALSE construct query and chart title
   if (exclude_RT == FALSE) {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-    "SELECT id, like_count, text
-    FROM tweet
-    WHERE like_count > 0;") %>%
-      slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
-      as.data.frame()
+    query <- "SELECT id, like_count, text
+              FROM tweet
+              WHERE like_count > 0;"
 
-    chart <- ggplot(chart_data,
-                    aes(x = reorder(substr(.data$text, 1, tweet_chars),
-                                    .data$like_count),
-                        y = .data$like_count)) +
-      geom_col(...) +
-      labs(title = paste0("Top ", n, " liked tweets (Twitter metrics)"),
-           x = "Tweet",
-           y = "Number of likes") +
-      scale_x_discrete(labels = label_wrap(chars_per_line)) +
-      configure_y_axis() +
-      coord_flip() +
-      configure_ggplot_theme() +
-      theme(axis.title.y = element_blank())
-
-    if (return_data == TRUE) {
-      return(list(chart = chart, data = chart_data))
-    }
-
-    else if (return_data == FALSE) {
-      return(chart)
-    }
+    title <- paste0("Top ", n, " liked tweets (Twitter metrics)")
 
   }
 
+  # When exclude_RT == TRUE construct query and chart title
   else if (exclude_RT == TRUE) {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-    "SELECT id, like_count, text
-    FROM tweet
-    WHERE like_count > 0
-      AND retweeted_tweet_id IS NULL;") %>%
+    query <- "SELECT id, like_count, text
+             FROM tweet
+             WHERE like_count > 0
+               AND retweeted_tweet_id IS NULL;"
+
+    title <- paste0("Top ",
+                    n,
+                    " liked tweets (Twitter metrics; excluding retweets)")
+
+  }
+
+    chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
       slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
       as.data.frame()
 
@@ -112,7 +98,7 @@ top_n_liked_tweets <- function(sqlite_con, n = 10,
                                     .data$like_count),
                         y = .data$like_count)) +
       geom_col(...) +
-      labs(title = paste0("Top ", n, " like tweets (Twitter metrics; excluding retweets)"),
+      labs(title = title,
            x = "Tweet",
            y = "Number of likes") +
       scale_x_discrete(labels = label_wrap(chars_per_line)) +
@@ -130,6 +116,3 @@ top_n_liked_tweets <- function(sqlite_con, n = 10,
     }
 
   }
-
-}
-
