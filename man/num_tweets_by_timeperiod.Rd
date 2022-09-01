@@ -75,14 +75,14 @@ The default is \code{FALSE}.}
 daily charts, or \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}} for monthly charts.}
 }
 \value{
-ggplot2 plot. If\code{return_data = TRUE}, returns a named list with the
+ggplot2 plot. If \code{return_data = TRUE}, returns a named list with the
 first element, \code{chart}, being a ggplot2 plot, and the second element,
 \code{data}, being the underlying data for the ggplot2 plot in the form of a
 data frame.
 }
 \description{
-Create a ggplot2 chart of the number of tweets per
-hour, day or month.
+Create a ggplot2 chart of the number of tweets per hour, day
+or month.
 
 Hourly and daily charts will be plotted as a line graph, and monthly charts
 will be plotted as a bar graph.

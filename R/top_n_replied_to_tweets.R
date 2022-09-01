@@ -90,6 +90,7 @@ top_n_replied_to_tweets <- function(sqlite_con, n = 10,
   }
 
   chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+    unique() %>%
     slice_max(n = n, order_by = .data$reply_count, with_ties = TRUE) %>%
     as.data.frame()
 

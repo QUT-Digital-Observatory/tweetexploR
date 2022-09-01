@@ -33,7 +33,8 @@
 engagement_summary <- function(sqlite_con) {
 
   DBI::dbGetQuery(sqlite_con,
-  "SELECT tweet.id as `tweet_id`, author_id, user.name as `username`, text, like_count, quote_count, reply_count, retweet_count
+  "SELECT tweet.id as `tweet_id`, author_id, user.name as `username`, text,
+    like_count, quote_count, reply_count, retweet_count
   FROM tweet
   LEFT JOIN user ON tweet.author_id = user.id;") %>%
     mutate(total = .data$like_count + .data$quote_count + .data$reply_count

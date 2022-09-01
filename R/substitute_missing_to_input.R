@@ -2,7 +2,7 @@
 #'   the current datetime in the appropriate format
 #'
 #' @param period Time period for which the tweet frequency will be calculated.
-#'   Accepted values are `"hour"`, `"day"`, or `"month"`. Defaults to `"day"`.
+#'   Accepted values are `"hour"`, `"day"`, or `"month"`.
 #'
 #' @return to Optional parameter to subset the data to tweets that were created
 #'   on or before the specified date and/or time in UTC.

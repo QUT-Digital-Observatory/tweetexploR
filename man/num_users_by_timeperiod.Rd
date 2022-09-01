@@ -91,13 +91,13 @@ will be plotted as a bar graph.
 \dontrun{
 
 num_users_by_timeperiod(sqlite_con, period = "hour",
-from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
+  from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
 
 num_users_by_timeperiod(sqlite_con, period = "day",
-from = "2022-06-20")
+  from = "2022-06-20")
 
 my_plot <- num_users_by_timeperiod(sqlite_con, period = "day",
-to = "2022-06-30")
+  to = "2022-06-30")
 
 my_plot <- num_users_by_timeperiod(sqlite_con, period = "month")
 

@@ -89,6 +89,7 @@ num_tweets_by_username <- function(sqlite_con,
   }
 
   chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+    unique() %>%
     slice_max(n = n, order_by = .data$tweet_count, with_ties = TRUE) %>%
     as.data.frame()
 

@@ -9,7 +9,7 @@ substitute_missing_to_input(period)
 }
 \arguments{
 \item{period}{Time period for which the tweet frequency will be calculated.
-Accepted values are \code{"hour"}, \code{"day"}, or \code{"month"}. Defaults to \code{"day"}.}
+Accepted values are \code{"hour"}, \code{"day"}, or \code{"month"}.}
 }
 \value{
 to Optional parameter to subset the data to tweets that were created

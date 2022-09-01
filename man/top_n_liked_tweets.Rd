@@ -56,7 +56,8 @@ top_n_liked_tweets(sqlite_con, 20)
 
 top_n_liked_tweets(sqlite_con, fill = "blue")
 
-top_50_liked_tweets <- top_n_liked_tweets(sqlite_con, n = 50, return_data = TRUE)
+top_50_liked_tweets <- top_n_liked_tweets(sqlite_con, n = 50,
+  return_data = TRUE)
 
 top_10_non_retweets <- top_n_liked_tweets(sqlite_con, exclude_RT = TRUE)
 

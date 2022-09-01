@@ -80,13 +80,13 @@
 #' \dontrun{
 #'
 #' num_users_by_timeperiod(sqlite_con, period = "hour",
-#' from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
+#'   from = "2022-06-20 06:00:00", to = "2022-06-21 06:00:00")
 #'
 #' num_users_by_timeperiod(sqlite_con, period = "day",
-#' from = "2022-06-20")
+#'   from = "2022-06-20")
 #'
 #' my_plot <- num_users_by_timeperiod(sqlite_con, period = "day",
-#' to = "2022-06-30")
+#'   to = "2022-06-30")
 #'
 #' my_plot <- num_users_by_timeperiod(sqlite_con, period = "month")
 #'
@@ -158,6 +158,7 @@ num_users_by_timeperiod <- function(sqlite_con,
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
       mutate(created_at_hour =
                floor_date(.data$created_at_datetime, unit = "hour")) %>%
@@ -213,6 +214,7 @@ num_users_by_timeperiod <- function(sqlite_con,
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       filter(.data$day >= ymd(from) & .data$day <= ymd(to)) %>%
       as.data.frame()
 
@@ -263,6 +265,7 @@ num_users_by_timeperiod <- function(sqlite_con,
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       mutate(month = floor_date(ymd(.data$day), "month")) %>%
       group_by(.data$month) %>%
       summarise(accounts = sum(.data$accounts)) %>%

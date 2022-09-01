@@ -50,7 +50,8 @@
 #'
 #' top_n_liked_tweets(sqlite_con, fill = "blue")
 #'
-#' top_50_liked_tweets <- top_n_liked_tweets(sqlite_con, n = 50, return_data = TRUE)
+#' top_50_liked_tweets <- top_n_liked_tweets(sqlite_con, n = 50,
+#'   return_data = TRUE)
 #'
 #' top_10_non_retweets <- top_n_liked_tweets(sqlite_con, exclude_RT = TRUE)
 #'
@@ -90,6 +91,7 @@ top_n_liked_tweets <- function(sqlite_con, n = 10,
   }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       slice_max(n = n, order_by = .data$like_count, with_ties = TRUE) %>%
       as.data.frame()
 

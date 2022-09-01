@@ -48,8 +48,8 @@
 #'
 #' top_10_hashtags <- top_n_hashtags(sqlite_con, return_data = TRUE)
 #'
-#' top_10_hashtags <- top_n_hashtags(sqlite_con,
-#'   return_data = TRUE, exclude_RT = TRUE)
+#' top_10_hashtags <- top_n_hashtags(sqlite_con, return_data = TRUE,
+#'   exclude_RT = TRUE)
 #'
 #' }
 #'

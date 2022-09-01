@@ -1,7 +1,7 @@
 #' Plot number of tweets per hour, day, or month
 #'
-#' @description Create a ggplot2 chart of the number of tweets per
-#'   hour, day or month.
+#' @description Create a ggplot2 chart of the number of tweets per hour, day
+#'   or month.
 #'
 #'   Hourly and daily charts will be plotted as a line graph, and monthly charts
 #'   will be plotted as a bar graph.
@@ -63,7 +63,7 @@
 #' @param ... Other arguments passed on to [ggplot2::geom_line()] for hourly and
 #'   daily charts, or [ggplot2::geom_col()] for monthly charts.
 #'
-#' @return ggplot2 plot. If`return_data = TRUE`, returns a named list with the
+#' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
 #'   first element, `chart`, being a ggplot2 plot, and the second element,
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
 #'   data frame.
@@ -103,7 +103,6 @@
 #' }
 #'
 #' @export
-# Number of tweets by username (top n usernames)
 
 num_tweets_by_timeperiod <- function(sqlite_con,
                                      period,
@@ -156,6 +155,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       mutate(created_at_datetime = ymd_hms(.data$created_at_datetime)) %>%
       mutate(created_at_hour = floor_date(.data$created_at_datetime,
                                           unit = "hour")) %>%
@@ -211,6 +211,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       filter(.data$day >= ymd(from) & .data$day <= ymd(to))
 
     chart <- ggplot(chart_data, aes(x = ymd(.data$day), y = .data$tweets)) +
@@ -259,6 +260,7 @@ num_tweets_by_timeperiod <- function(sqlite_con,
     }
 
     chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      unique() %>%
       mutate(month = floor_date(ymd(.data$day), "month")) %>%
       group_by(.data$month) %>%
       summarise(tweets = sum(.data$tweets)) %>%
