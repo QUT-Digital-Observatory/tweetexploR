@@ -18,6 +18,9 @@
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
 #'   in the second element, `data`, of the returned list.
 #'
+#' @param exclude_RT Should retweets be excluded from the calculations?
+#'   The default is `FALSE`.
+#'
 #' @param ... Other arguments passed to [ggplot2::geom_col()].
 #'
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
@@ -44,18 +47,55 @@
 #'
 #' top_n_mentions(sqlite_con, fill = "blue")
 #'
-#' top_10_mentions <- top_n_mentions(sqlitecon, return_data = TRUE)
+#' top_10_mentions <- top_n_mentions(sqlite_con, return_data = TRUE)
+#'
+#' top_10_mentions <- top_n_mentions(sqlite_con, return_data = TRUE,
+#'   exclude_RT = TRUE)
 #'
 #' }
 #'
 #' @export
 
-top_n_mentions <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
+top_n_mentions <- function(sqlite_con,
+                           n = 10,
+                           return_data = FALSE,
+                           exclude_RT = FALSE, ...) {
 
-  chart_data <- DBI::dbGetQuery(sqlite_con,
-  "SELECT username, source_id
-  FROM mention
-  WHERE source_type = 'tweet';") %>%
+  # When exclude_RT == FALSE construct query and chart title
+  if (exclude_RT == FALSE) {
+
+    query <- "SELECT username, source_id
+             FROM mention
+             LEFT JOIN (
+               SELECT id
+               FROM tweet ) tweet
+             ON tweet.id = mention.source_id
+             WHERE source_type = 'tweet';"
+
+    title <- paste0("Top ", n, " accounts mentioned in tweets")
+
+  }
+
+  # When exclude_RT == TRUE construct query and chart title
+  if (exclude_RT == TRUE) {
+
+    query <- "SELECT username, source_id
+             FROM mention
+             LEFT JOIN (
+               SELECT id, retweeted_tweet_id
+               FROM tweet ) tweet
+             ON tweet.id = mention.source_id
+             WHERE source_type = 'tweet'
+               AND retweeted_tweet_id IS NULL;"
+
+    title <- paste0("Top ",
+                    n,
+                    " accounts mentioned in tweets (excluding retweets")
+
+  }
+
+  chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+    unique() %>%
     mutate(tag = str_to_lower(.data$username)) %>%
     rename(account = .data$username) %>%
     group_by(.data$account) %>%
@@ -66,7 +106,7 @@ top_n_mentions <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
   chart <- ggplot(chart_data, aes(x = reorder(.data$account, .data$mentions),
                                   y = .data$mentions)) +
     geom_col(...) +
-    labs(title = paste0("Top ", n, " accounts mentioned in tweets"),
+    labs(title = title,
          x = "Username",
          y = "Number of tweets") +
     configure_y_axis() +

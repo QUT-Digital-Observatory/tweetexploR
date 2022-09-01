@@ -4,7 +4,13 @@
 \alias{top_n_mentions}
 \title{Plot top n account mentions}
 \usage{
-top_n_mentions(sqlite_con, n = 10, return_data = FALSE, ...)
+top_n_mentions(
+  sqlite_con,
+  n = 10,
+  return_data = FALSE,
+  exclude_RT = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sqlite_con}{\href{https://rsqlite.r-dbi.org/reference/sqliteconnection-class}{Class SQLiteConnection}
@@ -20,6 +26,9 @@ Default value is 10. Recommended value to ensure clear visualisation is
 \item{return_data}{Should the data underlying the chart be returned?
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
 in the second element, \code{data}, of the returned list.}
+
+\item{exclude_RT}{Should retweets be excluded from the calculations?
+The default is \code{FALSE}.}
 
 \item{...}{Other arguments passed to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
@@ -43,7 +52,10 @@ my_plot <- top_n_mentions(sqlite_con, 20)
 
 top_n_mentions(sqlite_con, fill = "blue")
 
-top_10_mentions <- top_n_mentions(sqlitecon, return_data = TRUE)
+top_10_mentions <- top_n_mentions(sqlite_con, return_data = TRUE)
+
+top_10_mentions <- top_n_mentions(sqlite_con, return_data = TRUE,
+  exclude_RT = TRUE)
 
 }
 
