@@ -24,7 +24,7 @@ results <- top_n_hashtags(sqlite_con, n = 10, return_data = TRUE)
 
 test_that("list of length 2 is created as expected", {
   expect_type(results, "list")
-  expect_equal(2, length(results))
+  expect_equal(length(results), 2)
 })
 
 

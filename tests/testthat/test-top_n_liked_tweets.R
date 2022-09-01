@@ -7,13 +7,13 @@ sqlite_con <- connect_to_sqlite_db(test_path("fixtures", "auspol-test.db"))
 # Tests for when return_data = FALSE ####
 
 test_that("result is a ggplot2 object", {
-  expect_true(ggplot2::is.ggplot(top_n_liked_tweets(sqlite_con, 10)))
+  expect_true(ggplot2::is.ggplot(top_n_liked_tweets(sqlite_con, n = 10)))
 })
 
 
 test_that("ggplot2 plot has expected output", {
   vdiffr::expect_doppelganger("top_n_liked_tweets_10",
-                              top_n_liked_tweets(sqlite_con, 10))
+                              top_n_liked_tweets(sqlite_con, n = 10))
 })
 
 
@@ -23,7 +23,7 @@ results <- top_n_liked_tweets(sqlite_con, n = 10, return_data = TRUE)
 
 test_that("list of length 2 is created as expected", {
   expect_type(results, "list")
-  expect_equal(2, length(results))
+  expect_equal(length(results), 2)
 })
 
 

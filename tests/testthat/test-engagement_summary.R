@@ -8,8 +8,9 @@ test_that("result is a dataframe", {
   expect_true(is.data.frame(engagement_summary(sqlite_con)))
 })
 
+
 test_that("data frame has expected number of columns", {
-  expect_equal(9, dim(engagement_summary(sqlite_con))[2])
+  expect_equal(dim(engagement_summary(sqlite_con))[2], 9)
 })
 
 
