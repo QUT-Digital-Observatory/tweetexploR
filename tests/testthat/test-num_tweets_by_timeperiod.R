@@ -25,21 +25,21 @@ test_that("result is a ggplot2 object (monthly plot)", {
 
 
 test_that("ggplot2 plot has expected output (hourly plot)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_hour",
+  vdiffr::expect_doppelganger("num_tweets_by_hour",
                               num_tweets_by_timeperiod(sqlite_con,
                                                        period = "hour"))
 })
 
 
 test_that("ggplot2 plot has expected output (daily plot)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_day",
+  vdiffr::expect_doppelganger("num_tweets_by_day",
                               num_tweets_by_timeperiod(sqlite_con,
                                                        period = "day"))
 })
 
 
 test_that("ggplot2 plot has expected output (monthly plot)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_month",
+  vdiffr::expect_doppelganger("num_tweets_by_month",
                              num_tweets_by_timeperiod(sqlite_con,
                                                       period = "month"))
 })
@@ -77,7 +77,7 @@ test_that("second element of list (data) is a data frame (hourly plot)", {
 
 
 test_that("ggplot2 plot has expected output (hourly plot)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_hour",
+  vdiffr::expect_doppelganger("num_tweets_by_hour",
                               results_hourly$chart)
 })
 
@@ -99,7 +99,7 @@ test_that("second element of list (data) is a data frame (daily plot)", {
 
 
 test_that("ggplot2 plot has expected output (daily plot)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_day",
+  vdiffr::expect_doppelganger("num_tweets_by_day",
                               results_daily$chart)
 })
 
@@ -121,7 +121,7 @@ test_that("second element of list (data) is a data frame (monthly plot)", {
 
 
 test_that("ggplot2 plot has expected output (monthly plot)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_month",
+  vdiffr::expect_doppelganger("num_tweets_by_month",
                               results_monthly$chart)
 })
 
@@ -129,7 +129,7 @@ test_that("ggplot2 plot has expected output (monthly plot)", {
 # Tests for when exclude_RT == TRUE ####
 
 test_that("ggplot2 plot has expected output (hourly plot excl RT)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_hour_excl_RT",
+  vdiffr::expect_doppelganger("num_tweets_by_hour_excl_RT",
                               num_tweets_by_timeperiod(sqlite_con,
                                                        period = "hour",
                                                        exclude_RT = TRUE))
@@ -137,7 +137,7 @@ test_that("ggplot2 plot has expected output (hourly plot excl RT)", {
 
 
 test_that("ggplot2 plot has expected output (daily plot excl RT)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_day_excl_RT",
+  vdiffr::expect_doppelganger("num_tweets_by_day_excl_RT",
                               num_tweets_by_timeperiod(sqlite_con,
                                                        period = "day",
                                                        exclude_RT = TRUE))
@@ -145,7 +145,7 @@ test_that("ggplot2 plot has expected output (daily plot excl RT)", {
 
 
 test_that("ggplot2 plot has expected output (monthly plot excl RT)", {
-  vdiffr::expect_doppelganger("num_tweets_by_timeperiod_month_excl_RT",
+  vdiffr::expect_doppelganger("num_tweets_by_month_excl_RT",
                               num_tweets_by_timeperiod(sqlite_con,
                                                        period = "month",
                                                        exclude_RT = TRUE))
