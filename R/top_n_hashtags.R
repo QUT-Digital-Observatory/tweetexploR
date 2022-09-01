@@ -54,7 +54,10 @@ top_n_hashtags <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
   chart_data <- DBI::dbGetQuery(sqlite_con,
   "SELECT tag, source_id
   FROM hashtag
-  WHERE source_type = 'tweet';") %>%
+  LEFT JOIN (
+    SELECT id
+    FROM tweet ) tweet
+  ON hashtag.source_id = tweet.id;") %>%
     mutate(tag = str_to_lower(.data$tag)) %>%
     rename(hashtag = .data$tag) %>%
     group_by(.data$hashtag) %>%
