@@ -58,72 +58,56 @@
 #'
 #' @export
 
-top_n_retweets <- function(sqlite_con, n = 10, metrics = FALSE,
-                           tweet_chars = 80, chars_per_line = 50,
+top_n_retweets <- function(sqlite_con,
+                           n = 10,
+                           metrics = FALSE,
+                           tweet_chars = 80,
+                           chars_per_line = 50,
                            return_data = FALSE, ...) {
 
   if (metrics == FALSE) {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-    "SELECT retweeted_tweet_id, count(*) as `retweets`, text
-    FROM tweet
-    WHERE retweeted_tweet_id IS NOT NULL
-    GROUP BY retweeted_tweet_id;") %>%
-      slice_max(n = n, order_by = .data$retweets, with_ties = TRUE) %>%
-      as.data.frame()
+    query <- "SELECT retweeted_tweet_id, count(*) as `retweets`, text
+             FROM tweet
+             WHERE retweeted_tweet_id IS NOT NULL
+             GROUP BY retweeted_tweet_id;"
 
-    chart <- ggplot(chart_data,
-      aes(x = reorder(substr(.data$text, 1, tweet_chars), .data$retweets),
-          y = .data$retweets)) +
-      geom_col(...) +
-      labs(title = paste0("Top ", n, " retweeted tweets (within collection)"),
-           x = "Tweet",
-           y = "Number of retweets") +
-      scale_x_discrete(labels = label_wrap(chars_per_line)) +
-      configure_y_axis() +
-      coord_flip() +
-      configure_ggplot_theme() +
-      theme(axis.title.y = element_blank())
-
-    if (return_data == TRUE) {
-      return(list(chart = chart, data = chart_data))
-    }
-
-    else if (return_data == FALSE) {
-      return(chart)
-    }
+    title <- paste0("Top ", n, " retweeted tweets (within collection)")
 
   }
 
   else if (metrics == TRUE) {
 
-    chart_data <- DBI::dbGetQuery(sqlite_con,
-    "SELECT retweet_count, text
-    FROM tweet;") %>%
-      distinct() %>%
-      slice_max(n = n, order_by = .data$retweet_count, with_ties = TRUE) %>%
-      as.data.frame()
+    query <- "SELECT retweet_count as `retweets`, text
+             FROM tweet;"
 
-    chart <- ggplot(chart_data,
-      aes(x = reorder(substr(.data$text, 1, tweet_chars), .data$retweet_count),
-          y = .data$retweet_count)) +
-      geom_col(...) +
-      labs(title = paste0("Top ", n, " retweeted tweets (Twitter metrics)"),
-           y = "Number of retweets") +
-      scale_x_discrete(labels = scales::label_wrap(chars_per_line)) +
-      configure_y_axis() +
-      ggplot2::coord_flip() +
-      configure_ggplot_theme() +
-      theme(axis.title.y = ggplot2::element_blank())
+    title <- paste0("Top ", n, " retweeted tweets (Twitter metrics)")
 
-    if (return_data == TRUE) {
-      return(list(chart = chart, data = chart_data))
-    }
+  }
 
-    else if (return_data == FALSE) {
-      return(chart)
-    }
+  chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+    slice_max(n = n, order_by = .data$retweets, with_ties = TRUE) %>%
+    unique() %>%
+    as.data.frame()
 
+  chart <- ggplot(chart_data,
+    aes(x = reorder(substr(.data$text, 1, tweet_chars), .data$retweets),
+        y = .data$retweets)) +
+    geom_col(...) +
+    labs(title = title,
+         y = "Number of retweets") +
+    scale_x_discrete(labels = label_wrap(chars_per_line)) +
+    configure_y_axis() +
+    coord_flip() +
+    configure_ggplot_theme() +
+    theme(axis.title.y = element_blank())
+
+  if (return_data == TRUE) {
+    return(list(chart = chart, data = chart_data))
+  }
+
+  else if (return_data == FALSE) {
+    return(chart)
   }
 
 }
