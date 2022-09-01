@@ -17,6 +17,9 @@
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
 #'   in the second element, `data`, of the returned list.
 #'
+#' @param exclude_RT Should retweets be excluded from the calculations?
+#'   The default is `FALSE`.
+#'
 #' @param ... Other arguments passed on to [ggplot2::geom_col()].
 #'
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
@@ -45,19 +48,49 @@
 #'
 #' top_10_hashtags <- top_n_hashtags(sqlite_con, return_data = TRUE)
 #'
+#' top_10_hashtags <- top_n_hashtags(sqlite_con,
+#'   return_data = TRUE, exclude_RT = TRUE)
+#'
 #' }
 #'
 #' @export
 
-top_n_hashtags <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
+top_n_hashtags <- function(sqlite_con,
+                           n = 10,
+                           return_data = FALSE,
+                           exclude_RT = FALSE, ...) {
 
-  chart_data <- DBI::dbGetQuery(sqlite_con,
-  "SELECT tag, source_id
-  FROM hashtag
-  LEFT JOIN (
-    SELECT id
-    FROM tweet ) tweet
-  ON hashtag.source_id = tweet.id;") %>%
+  # When exclude_RT == FALSE construct query and chart title
+  if (exclude_RT == FALSE) {
+
+    query <- "SELECT tag, source_id
+             FROM hashtag
+             LEFT JOIN (
+               SELECT id
+               FROM tweet ) tweet
+             ON hashtag.source_id = tweet.id;"
+
+    title <- paste0("Top ", n, " hashtags")
+
+  }
+
+  # When exclude_RT == TRUE construct query and chart title
+  if (exclude_RT == TRUE) {
+
+    query <- "SELECT tag, source_id
+             FROM hashtag
+             LEFT JOIN (
+               SELECT id
+               FROM tweet
+               WHERE retweeted_tweet_id IS NULL ) tweet
+             ON hashtag.source_id = tweet.id
+             WHERE source_type = 'tweet'"
+
+    title <- paste0("Top ", n, " hashtags (excluding retweets)")
+
+  }
+
+  chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
     mutate(tag = str_to_lower(.data$tag)) %>%
     rename(hashtag = .data$tag) %>%
     group_by(.data$hashtag) %>%
@@ -68,7 +101,7 @@ top_n_hashtags <- function(sqlite_con, n = 10, return_data = FALSE, ...) {
   chart <- ggplot(chart_data, aes(x = reorder(.data$hashtag, .data$tags),
                                   y = .data$tags)) +
     geom_col(...) +
-    labs(title = paste0("Top ", n, " hashtags"),
+    labs(title = title,
          x = "Hashtag",
          y = "Number of tweets") +
     configure_y_axis() +
