@@ -68,7 +68,8 @@ top_n_hashtags <- function(sqlite_con,
              LEFT JOIN (
                SELECT id
                FROM tweet ) tweet
-             ON hashtag.source_id = tweet.id;"
+             ON tweet.id = hashtag.source_id
+             WHERE source_type = 'tweet';"
 
     title <- paste0("Top ", n, " hashtags")
 
@@ -80,17 +81,18 @@ top_n_hashtags <- function(sqlite_con,
     query <- "SELECT tag, source_id
              FROM hashtag
              LEFT JOIN (
-               SELECT id
-               FROM tweet
-               WHERE retweeted_tweet_id IS NULL ) tweet
-             ON hashtag.source_id = tweet.id
-             WHERE source_type = 'tweet'"
+               SELECT id, retweeted_tweet_id
+               FROM tweet ) tweet
+             ON tweet.id = hashtag.source_id
+             WHERE source_type = 'tweet'
+               AND retweeted_tweet_id IS NULL;"
 
     title <- paste0("Top ", n, " hashtags (excluding retweets)")
 
   }
 
   chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+    unique() %>%
     mutate(tag = str_to_lower(.data$tag)) %>%
     rename(hashtag = .data$tag) %>%
     group_by(.data$hashtag) %>%
