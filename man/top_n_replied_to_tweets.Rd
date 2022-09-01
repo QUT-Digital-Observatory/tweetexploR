@@ -10,6 +10,7 @@ top_n_replied_to_tweets(
   tweet_chars = 80,
   chars_per_line = 50,
   return_data = FALSE,
+  exclude_RT = FALSE,
   ...
 )
 }
@@ -33,6 +34,9 @@ per line without breaking a word.}
 The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be accessed
 in the second element, \code{data}, of the returned list.}
 
+\item{exclude_RT}{Should retweets be excluded from the calculations?
+The default is \code{FALSE}.}
+
 \item{...}{Other arguments to be passed to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
 \value{
@@ -52,7 +56,11 @@ top_n_replied_to_tweets(sqlite_con, 12)
 
 top_n_replied_to_tweets(sqlite_con, fill = "blue")
 
-top_10_replied_to_tweets <- top_n_replied_to_tweets(sqlite_con, return_data = TRUE)
+top_10_replied_to_tweets <- top_n_replied_to_tweets(sqlite_con,
+  return_data = TRUE)
+
+top_10_replied_to_tweets <- top_n_replied_to_tweets(sqlite_con,
+  return_data = TRUE, exclude_RT = TRUE)
 
 }
 

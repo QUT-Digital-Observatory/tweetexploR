@@ -42,6 +42,16 @@ test_that("ggplot2 plot has expected output", {
 })
 
 
+# Tests for when exclude_RT = TRUE ####
+
+test_that("ggplot2 plot has expected output (excl RT)", {
+  vdiffr::expect_doppelganger("top_n_replied_to_tweets_10_excl_RT",
+                              top_n_replied_to_tweets(sqlite_con,
+                                                      n = 10,
+                                                      exclude_RT = TRUE))
+})
+
+
 # Disconnect from database ####
 
 DBI::dbDisconnect(sqlite_con)

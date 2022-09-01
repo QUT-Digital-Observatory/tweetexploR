@@ -22,6 +22,9 @@
 #'   The default is `FALSE`. If `return_data = TRUE`, the data can be accessed
 #'   in the second element, `data`, of the returned list.
 #'
+#' @param exclude_RT Should retweets be excluded from the calculations?
+#'   The default is `FALSE`.
+#'
 #' @param ... Other arguments to be passed to [ggplot2::geom_col()].
 #'
 #' @return ggplot2 plot. If `return_data = TRUE`, returns a named list with the
@@ -47,7 +50,11 @@
 #'
 #' top_n_replied_to_tweets(sqlite_con, fill = "blue")
 #'
-#' top_10_replied_to_tweets <- top_n_replied_to_tweets(sqlite_con, return_data = TRUE)
+#' top_10_replied_to_tweets <- top_n_replied_to_tweets(sqlite_con,
+#'   return_data = TRUE)
+#'
+#' top_10_replied_to_tweets <- top_n_replied_to_tweets(sqlite_con,
+#'   return_data = TRUE, exclude_RT = TRUE)
 #'
 #' }
 #'
@@ -56,11 +63,33 @@
 top_n_replied_to_tweets <- function(sqlite_con, n = 10,
                                     tweet_chars = 80,
                                     chars_per_line = 50,
-                                    return_data = FALSE, ...) {
+                                    return_data = FALSE,
+                                    exclude_RT = FALSE, ...) {
 
-  chart_data <- DBI::dbGetQuery(sqlite_con,
-  "SELECT id, reply_count, text
-  FROM tweet;") %>%
+  # When exclude_RT == FALSE construct query and chart title
+  if (exclude_RT == FALSE) {
+
+    query <- "SELECT id, reply_count, text
+             FROM tweet;"
+
+    title <- paste0("Top ", n, " replied to tweets (Twitter metrics)")
+
+  }
+
+  # When exclude_RT == TRUE construct query and chart title
+  if (exclude_RT == TRUE) {
+
+    query <- "SELECT id, reply_count, text
+              FROM tweet
+              WHERE retweeted_tweet_id IS NULL;"
+
+    title <- paste0("Top ",
+                    n,
+                    " replied to tweets (Twitter metrics; excluding retweets)")
+
+  }
+
+  chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
     slice_max(n = n, order_by = .data$reply_count, with_ties = TRUE) %>%
     as.data.frame()
 
@@ -68,7 +97,7 @@ top_n_replied_to_tweets <- function(sqlite_con, n = 10,
     aes(x = reorder(substr(.data$text, 1, tweet_chars), .data$reply_count),
         y = .data$reply_count)) +
     geom_col(...) +
-    labs(title = paste0("Top ", n, "replied to tweets (Twitter metrics)"),
+    labs(title = title,
          x = "Tweet",
          y = "Number of replies") +
     scale_x_discrete(labels = label_wrap(chars_per_line)) +
