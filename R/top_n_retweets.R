@@ -52,7 +52,10 @@
 #'
 #' top_n_retweets(sqlite_con, n = 12, fill = "blue")
 #'
-#' top_10_retweets <- (sqlite_con, return_data = TRUE)
+#' top_10_retweets <- top_n_retweets(sqlite_con, return_data = TRUE)
+#'
+#' top_10_retweets <- top_n_retweets(sqlite_con, return_data = TRUE,
+#'   metrics = TRUE)
 #'
 #' }
 #'
