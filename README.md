@@ -4,7 +4,7 @@
 
 <!-- badges: end -->
 
-tweetexploR is an R package for exploring and visualising a collection of Tweets that have been tidied into an SQLite database file by the [tidy_tweet](https://pypi.org/project/tidy-tweet/) library.
+tweetexploR is an R package for exploring and visualising a collection of Tweets that has been tidied into an SQLite database file by the [tidy_tweet](https://pypi.org/project/tidy-tweet/) library.
 
 tweetexploR allows you to quickly answer questions such as:
 
@@ -18,6 +18,7 @@ tweetexploR allows you to quickly answer questions such as:
 | Who is being mentioned the most?                        | `top_n_mentions()`           |
 | Who is being replied to the most?                       | `top_n_replied_to_tweets()`  |
 | Which tweets were retweeted the most?                   | `top_n_retweeted_tweets()`   |
+| Which accounts were retweeted the most?                 | `top_n_retweeted_accounts()` |
 | What are the engagement metrics for the tweets?         | `engagement_summary()`       |
 
 Under the hood, tweetexploR uses [ggplot2](https://ggplot2.tidyverse.org/) to create nicely formatted charts, and even allows you to tweak them to suit your own preferences. tweetexploR also gives you the option to export the data underlying each visualisation by using the `return_data = TRUE` parameter.
