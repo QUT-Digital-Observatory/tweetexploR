@@ -30,7 +30,7 @@
 #'   `data`, being the underlying data for the ggplot2 plot in the form of a
 #'   data frame.
 #'
-#' @importFrom dplyr mutate rename group_by summarise n slice_max
+#' @importFrom dplyr mutate rename group_by summarise n slice_max n_distinct
 #'
 #' @importFrom ggplot2 ggplot aes geom_col labs theme coord_flip element_blank
 #'
@@ -64,9 +64,31 @@ top_n_retweeted_accounts <- function(sqlite_con,
 
   if (metrics == FALSE) {
 
-    query <- ""
+    query <- "SELECT tweet.id,
+               retweeted_tweet_id,
+               retweeted_tweets.author_id as `retweeted_author_id`,
+               user.username as `username`,
+               retweeted_tweets.text as `retweeted_text`
+             FROM tweet
+             LEFT JOIN (
+               SELECT id as `primary_id`, author_id, text
+               FROM tweet ) retweeted_tweets
+             ON tweet.retweeted_tweet_id = retweeted_tweets.primary_id
+             LEFT JOIN (
+               SELECT id, username
+               FROM user ) user
+             ON user.id = retweeted_tweets.author_id
+             WHERE retweeted_tweet_id IS NOT NULL;"
 
-    title <- paste0()
+    title <- paste0("Top ", n, " retweeted accounts (within collection)")
+
+    chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      group_by(.data$username) %>%
+      summarise(tweets = n_distinct(.data$retweeted_tweet_id),
+                retweets = n(),
+                avg_retweets_per_tweet = round(.data$retweets/.data$tweets, 1)) %>%
+      slice_max(n = n, order_by = .data$avg_retweets_per_tweet, with_ties = TRUE) %>%
+      as.data.frame()
 
   }
 
@@ -82,15 +104,15 @@ top_n_retweeted_accounts <- function(sqlite_con,
 
     title <- paste0("Top ", n, " retweeted accounts (Twitter metrics)")
 
-  }
+    chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
+      group_by(.data$username) %>%
+      summarise(tweets = n(),
+                retweets = sum(.data$retweet_count),
+                avg_retweets_per_tweet = round(.data$retweets/.data$tweets, 1)) %>%
+      slice_max(n = n, order_by = .data$avg_retweets_per_tweet, with_ties = TRUE) %>%
+      as.data.frame()
 
-  chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
-    group_by(.data$username) %>%
-    summarise(tweets = n(),
-              retweets = sum(.data$retweet_count),
-              avg_retweets_per_tweet = round(.data$retweets/.data$tweets, 1)) %>%
-    slice_max(n = n, order_by = .data$avg_retweets_per_tweet, with_ties = TRUE) %>%
-    as.data.frame()
+  }
 
   chart <- ggplot(chart_data,
     aes(x = reorder(.data$username, .data$avg_retweets_per_tweet),
