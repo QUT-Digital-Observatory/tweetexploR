@@ -1,9 +1,9 @@
 Package: tweetexploR
 Title: Explore Tidy Tweet SQLite Databases
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("QUT Digital Observatory", , , "digitalobservatory@qut.edu.au", role = c("aut", "cre"))
-Description: Explore and visualise a collection of tweets that have been
+Description: Explore and visualise a collection of tweets that has been 
     tidied into an SQLite database file by the [tidy-tweet
     package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
 License: MIT + file LICENSE

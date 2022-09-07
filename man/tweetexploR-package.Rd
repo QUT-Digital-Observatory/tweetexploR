@@ -6,7 +6,7 @@
 \alias{tweetexploR-package}
 \title{tweetexploR: Explore Tidy Tweet SQLite Databases}
 \description{
-Explore and visualise a collection of tweets that have been tidied into an SQLite database file by the [tidy-tweet package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
+Explore and visualise a collection of tweets that has been tidied into an SQLite database file by the [tidy-tweet package](https://github.com/QUT-Digital-Observatory/tidy_tweet).
 }
 \author{
 \strong{Maintainer}: QUT Digital Observatory \email{digitalobservatory@qut.edu.au}
