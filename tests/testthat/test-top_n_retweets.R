@@ -22,7 +22,7 @@ test_that("ggplot2 plot has expected output", {
 test_that("ggplot2 plot has expected output", {
   vdiffr::expect_doppelganger("top_n_retweets_10_metrics_true",
                               top_n_retweets(sqlite_con,
-                                             10,
+                                             n = 10,
                                              metrics = TRUE))
 })
 
