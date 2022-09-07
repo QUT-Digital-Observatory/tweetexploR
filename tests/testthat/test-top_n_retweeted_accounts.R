@@ -56,17 +56,5 @@ test_that("second element of list (data) is a data frame (metrics = TRUE)", {
 })
 
 
-# test_that("ggplot2 plot has expected output (metrics = TRUE)", {
-#   vdiffr::expect_doppelganger("top_n_RT_accounts_10_m_true",
-#                               results_metrics_true$chart)
-# })
-
-
-# test_that("ggplot2 plot has expected output (metrics = FALSE)", {
-#   vdiffr::expect_doppelganger("top_n_RT_accounts_10_m_false",
-#                               results_metrics_false$chart)
-# })
-
-
 # Disconnect from database ####
 DBI::dbDisconnect(sqlite_con)
