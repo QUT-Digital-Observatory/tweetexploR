@@ -72,10 +72,10 @@ top_n_retweeted_accounts <- function(sqlite_con,
 
   else if (metrics == TRUE) {
 
-    query <- "SELECT tweet.id, author_id, name, retweet_count
+    query <- "SELECT tweet.id, author_id, username, retweet_count
              FROM tweet
              LEFT JOIN (
-               SELECT id, name
+               SELECT id, username
                FROM user ) user
              ON user.id = tweet.author_id
              WHERE retweet_count > 0;"
@@ -85,12 +85,11 @@ top_n_retweeted_accounts <- function(sqlite_con,
   }
 
   chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
-    rename(username = .data$name) %>%
-    group_by(.data$author_id, .data$username) %>%
+    group_by(.data$username) %>%
     summarise(tweets = n(),
               retweets = sum(.data$retweet_count),
               avg_retweets_per_tweet = round(.data$retweets/.data$tweets, 1)) %>%
-    slice_max(n = 10, order_by = .data$avg_retweets_per_tweet, with_ties = TRUE) %>%
+    slice_max(n = n, order_by = .data$avg_retweets_per_tweet, with_ties = TRUE) %>%
     as.data.frame()
 
   chart <- ggplot(chart_data,
