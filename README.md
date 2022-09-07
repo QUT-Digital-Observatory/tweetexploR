@@ -104,3 +104,18 @@ Once you've finished exploRing, it's good practice to disconnect from your SQLit
 ``` r
 DBI::dbDisconnect(sqlite_con)
 ```
+
+## Feedback and contributions
+
+We appreciate all feedback and contributions!
+
+Issues (documentation improvements, bug reports, and feature requests/discussions) are always welcome on our GitHub, as are pull requests.
+
+If you found an error or if something was unclear to you, please [file an issue on our GitHub](https://github.com/QUT-Digital-Observatory/tweetexploR/issues) for us to fix. We will do our best to respond to all issues, and appreciate your time and feedback. Alternatively, you can submit a pull request with your own changes.
+
+
+## About tweetexploR
+
+tweetexploR is created and maintained by the [QUT Digital Observatory](https://www.qut.edu.au/digital-observatory) and is open-sourced under an MIT license. We welcome contributions and feedback!
+
+A DOI and citation information will be added in future.
