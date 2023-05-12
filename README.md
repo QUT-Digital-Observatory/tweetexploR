@@ -120,4 +120,5 @@ If you found an error or if something was unclear to you, please [file an issue 
 tweetexploR is created and maintained by the [QUT Digital Observatory](https://www.qut.edu.au/digital-observatory) and is open-sourced under an MIT license. We welcome contributions and feedback!
 
 To cite this package:
+
 QUT Digital Observatory (2023): tweetexploR. Queensland University of Technology. (Software) https://doi.org/10.25912/RDF_1676860790823
