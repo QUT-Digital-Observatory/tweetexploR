@@ -93,15 +93,15 @@ top_n_hashtags <- function(sqlite_con,
 
   chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
     unique() %>%
-    mutate(tag = str_to_lower(tag)) %>%
-    rename(hashtag = tag) %>%
-    group_by(hashtag) %>%
+    mutate(tag = str_to_lower(.data$tag)) %>%
+    rename(hashtag = .data$tag) %>%
+    group_by(.data$hashtag) %>%
     summarise(tags = n()) %>%
-    slice_max(n = n, order_by = tags, with_ties = TRUE) %>%
+    slice_max(n = n, order_by = .data$tags, with_ties = TRUE) %>%
     as.data.frame()
 
-  chart <- ggplot(chart_data, aes(x = reorder(hashtag, tags),
-                                  y = tags)) +
+  chart <- ggplot(chart_data, aes(x = reorder(.data$hashtag, .data$tags),
+                                  y = .data$tags)) +
     geom_col(...) +
     labs(title = title,
          x = "Hashtag",

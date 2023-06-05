@@ -96,15 +96,15 @@ top_n_mentions <- function(sqlite_con,
 
   chart_data <- DBI::dbGetQuery(sqlite_con, query) %>%
     unique() %>%
-    mutate(tag = str_to_lower(username)) %>%
-    rename(account = username) %>%
-    group_by(account) %>%
+    mutate(tag = str_to_lower(.data$username)) %>%
+    rename(account = .data$username) %>%
+    group_by(.data$account) %>%
     summarise(mentions = n()) %>%
-    slice_max(n = n, order_by = mentions, with_ties = TRUE) %>%
+    slice_max(n = n, order_by = .data$mentions, with_ties = TRUE) %>%
     as.data.frame()
 
-  chart <- ggplot(chart_data, aes(x = reorder(account, mentions),
-                                  y = mentions)) +
+  chart <- ggplot(chart_data, aes(x = reorder(.data$account, .data$mentions),
+                                  y = .data$mentions)) +
     geom_col(...) +
     labs(title = title,
          x = "Username",
