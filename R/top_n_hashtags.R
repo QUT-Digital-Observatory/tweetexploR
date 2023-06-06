@@ -63,13 +63,12 @@ top_n_hashtags <- function(sqlite_con,
   # When exclude_RT == FALSE construct query and chart title
   if (exclude_RT == FALSE) {
 
-    query <- "SELECT tag, source_id
-             FROM hashtag
+    query <- "SELECT hashtag as `tag`, tweet_id
+             FROM tweet_hashtag
              LEFT JOIN (
                SELECT id
                FROM tweet ) tweet
-             ON tweet.id = hashtag.source_id
-             WHERE source_type = 'tweet';"
+             ON tweet.id = tweet_hashtag.tweet_id"
 
     title <- paste0("Top ", n, " hashtags")
 
@@ -78,14 +77,13 @@ top_n_hashtags <- function(sqlite_con,
   # When exclude_RT == TRUE construct query and chart title
   if (exclude_RT == TRUE) {
 
-    query <- "SELECT tag, source_id
-             FROM hashtag
+    query <- "SELECT hashtag as `tag`, tweet_id
+             FROM tweet_hashtag
              LEFT JOIN (
                SELECT id, retweeted_tweet_id
                FROM tweet ) tweet
-             ON tweet.id = hashtag.source_id
-             WHERE source_type = 'tweet'
-               AND retweeted_tweet_id IS NULL;"
+             ON tweet.id = tweet_hashtag.tweet_id
+             WHERE retweeted_tweet_id IS NULL;"
 
     title <- paste0("Top ", n, " hashtags (excluding retweets)")
 
