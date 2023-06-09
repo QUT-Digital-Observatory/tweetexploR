@@ -18,7 +18,12 @@
 #'   in the second element, `data`, of the returned list.
 #'
 #' @param exclude_RT Should retweets be excluded from the calculations?
-#'   The default is `FALSE`.
+#'   The default is `FALSE`. This parameter will be ignored if
+#'   `hashtag_source = "users"`.
+#'
+#' @param hashtag_source Should the top n hashtags be calculated from tweets or
+#'   user profiles? The default is `tweets`. Use "tweets" or "users" as
+#'   appropriate.
 #'
 #' @param ... Other arguments passed on to [ggplot2::geom_col()].
 #'
@@ -58,34 +63,50 @@
 top_n_hashtags <- function(sqlite_con,
                            n = 10,
                            return_data = FALSE,
-                           exclude_RT = FALSE, ...) {
+                           exclude_RT = FALSE,
+                           hashtag_source = "tweets", ...) {
 
-  # When exclude_RT == FALSE construct query and chart title
-  if (exclude_RT == FALSE) {
+  # When hashtag_source == "tweets" construct query and chart title
+  if (hashtag_source == "tweets") {
 
-    query <- "SELECT hashtag as `tag`, tweet_id
-             FROM tweet_hashtag
-             LEFT JOIN (
-               SELECT id
-               FROM tweet ) tweet
-             ON tweet.id = tweet_hashtag.tweet_id"
+    y_axis_label <- "Number of tweets"
 
-    title <- paste0("Top ", n, " hashtags")
+    # When exclude_RT == FALSE construct query and chart title
+    if (exclude_RT == FALSE) {
+
+      query <- "SELECT hashtag as `tag`, tweet_id
+                FROM tweet_hashtag"
+
+      title <- paste0("Top ", n, " hashtags from tweets")
+
+    }
+
+    # When exclude_RT == TRUE construct query and chart title
+    if (exclude_RT == TRUE) {
+
+      query <- "SELECT hashtag as `tag`, tweet_id
+                FROM tweet_hashtag
+                LEFT JOIN (
+                  SELECT id, retweeted_tweet_id
+                  FROM tweet ) tweet
+                ON tweet.id = tweet_hashtag.tweet_id
+                WHERE retweeted_tweet_id IS NULL;"
+
+      title <- paste0("Top ", n, " hashtags from tweets (excluding retweets)")
+
+    }
 
   }
 
-  # When exclude_RT == TRUE construct query and chart title
-  if (exclude_RT == TRUE) {
+  # When hashtag_source == "users" construct query and chart title
+  if (hashtag_source == "users") {
 
-    query <- "SELECT hashtag as `tag`, tweet_id
-             FROM tweet_hashtag
-             LEFT JOIN (
-               SELECT id, retweeted_tweet_id
-               FROM tweet ) tweet
-             ON tweet.id = tweet_hashtag.tweet_id
-             WHERE retweeted_tweet_id IS NULL;"
+    query <- "SELECT hashtag as `tag`, user_id
+              FROM user_hashtag"
 
-    title <- paste0("Top ", n, " hashtags (excluding retweets)")
+    title <- paste0("Top ", n, " hashtags from user profiles")
+
+    y_axis_label <- "Number of users"
 
   }
 
@@ -103,7 +124,7 @@ top_n_hashtags <- function(sqlite_con,
     geom_col(...) +
     labs(title = title,
          x = "Hashtag",
-         y = "Number of tweets") +
+         y = y_axis_label) +
     configure_y_axis() +
     coord_flip() +
     configure_ggplot_theme() +

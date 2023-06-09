@@ -69,6 +69,6 @@
 <text x='482.18' y='556.75' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='16.69px' lengthAdjust='spacingAndGlyphs'>400</text>
 <text x='672.08' y='556.75' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='16.69px' lengthAdjust='spacingAndGlyphs'>600</text>
 <text x='393.88' y='568.44' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='78.38px' lengthAdjust='spacingAndGlyphs'>Number of tweets</text>
-<text x='73.24' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='81.96px' lengthAdjust='spacingAndGlyphs'>Top 10 hashtags</text>
+<text x='73.24' y='13.05' style='font-size: 11.00px; font-family: sans;' textLength='141.87px' lengthAdjust='spacingAndGlyphs'>Top 10 hashtags from tweets</text>
 </g>
 </svg>
