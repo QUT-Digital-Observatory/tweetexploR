@@ -64,13 +64,8 @@ top_n_mentions <- function(sqlite_con,
   # When exclude_RT == FALSE construct query and chart title
   if (exclude_RT == FALSE) {
 
-    query <- "SELECT username, source_id
-             FROM mention
-             LEFT JOIN (
-               SELECT id
-               FROM tweet ) tweet
-             ON tweet.id = mention.source_id
-             WHERE source_type = 'tweet';"
+    query <- "SELECT username, tweet_id
+             FROM tweet_mention;"
 
     title <- paste0("Top ", n, " accounts mentioned in tweets")
 
@@ -79,14 +74,13 @@ top_n_mentions <- function(sqlite_con,
   # When exclude_RT == TRUE construct query and chart title
   if (exclude_RT == TRUE) {
 
-    query <- "SELECT username, source_id
-             FROM mention
+    query <- "SELECT username, tweet_id
+             FROM tweet_mention
              LEFT JOIN (
                SELECT id, retweeted_tweet_id
                FROM tweet ) tweet
-             ON tweet.id = mention.source_id
-             WHERE source_type = 'tweet'
-               AND retweeted_tweet_id IS NULL;"
+             ON tweet.id = tweet_mention.tweet_id
+             WHERE retweeted_tweet_id IS NULL;"
 
     title <- paste0("Top ",
                     n,

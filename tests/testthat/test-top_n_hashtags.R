@@ -17,7 +17,7 @@ test_that("ggplot2 plot has expected output", {
 })
 
 
-# Tests for when return_data = TRUE
+# Tests for when return_data = TRUE ####
 
 results <- top_n_hashtags(sqlite_con, n = 10, return_data = TRUE)
 
@@ -50,6 +50,15 @@ test_that("ggplot2 plot has expected output (excl RT)", {
                               top_n_hashtags(sqlite_con,
                                              n = 10,
                                              exclude_RT = TRUE))
+})
+
+# Tests for when hashtag_source = "users" ####
+
+test_that("ggplot2 plot has expected output (user hashtags", {
+  vdiffr::expect_doppelganger("top_n_hashtags_users",
+                              top_n_hashtags(sqlite_con,
+                                             n = 10,
+                                             hashtag_source = "users"))
 })
 
 

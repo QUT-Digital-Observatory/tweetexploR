@@ -22,7 +22,12 @@ summary will be in the form of a data frame, and will include the
 following Twitter metrics: likes, quotes, replies, and retweets. A total of
 all Twitter metrics will also be included. The summary will be sorted in
 descending order by total, and will include the tweet text, tweet ID,
-author ID, and author username.
+author ID, and author username. Crucially, there are two date/time columns
+returned (as POSIXct in UTC time): created_at and retrieved_at. This allows
+the user to normalise engagement metrics against the difference between
+created_at and retrieved_at (since more time between a tweet being created
+and retrieved means more opportunity for the tweet to accumulate
+engagement).
 }
 \examples{
 \dontrun{

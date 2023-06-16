@@ -1,6 +1,6 @@
 Package: tweetexploR
 Title: Explore Tidy Tweet SQLite Databases
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person("QUT Digital Observatory", , , "digitalobservatory@qut.edu.au", role = c("aut", "cre"))
 Description: Explore and visualise a collection of tweets that has been 
@@ -9,15 +9,15 @@ Description: Explore and visualise a collection of tweets that has been
 License: MIT + file LICENSE
 Imports: 
     DBI (>= 1.1.0),
-    dplyr (>= 1.0.0),
-    ggplot2 (>= 3.3.0),
-    lubridate (>= 1.8.0),
+    dplyr (>= 1.1.0),
+    ggplot2 (>= 3.4.0),
+    lubridate (>= 1.9.0),
     magrittr (>= 2.0.0),
-    rlang (>= 1.0.0),
-    RSQLite (>= 2.2.4),
-    scales (>= 1.1.0),
-    stats (>= 3.6.2),
-    stringr (>= 1.4.0)
+    rlang (>= 1.1.0),
+    RSQLite (>= 2.3.0),
+    scales (>= 1.2.0),
+    stats (>= 4.0.0),
+    stringr (>= 1.5.0)
 Suggests: 
     testthat (>= 3.0.0),
     tibble (>= 3.0.0),
@@ -25,4 +25,4 @@ Suggests:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3

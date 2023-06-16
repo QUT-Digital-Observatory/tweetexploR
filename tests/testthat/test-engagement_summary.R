@@ -10,7 +10,7 @@ test_that("result is a dataframe", {
 
 
 test_that("data frame has expected number of columns", {
-  expect_equal(dim(engagement_summary(sqlite_con))[2], 9)
+  expect_equal(dim(engagement_summary(sqlite_con))[2], 11)
 })
 
 

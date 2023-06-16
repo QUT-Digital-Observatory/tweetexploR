@@ -9,6 +9,7 @@ top_n_hashtags(
   n = 10,
   return_data = FALSE,
   exclude_RT = FALSE,
+  hashtag_source = "tweets",
   ...
 )
 }
@@ -28,7 +29,12 @@ The default is \code{FALSE}. If \code{return_data = TRUE}, the data can be acces
 in the second element, \code{data}, of the returned list.}
 
 \item{exclude_RT}{Should retweets be excluded from the calculations?
-The default is \code{FALSE}.}
+The default is \code{FALSE}. This parameter will be ignored if
+\code{hashtag_source = "users"}.}
+
+\item{hashtag_source}{Should the top n hashtags be calculated from tweets or
+user profiles? The default is \code{tweets}. Use "tweets" or "users" as
+appropriate.}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:geom_bar]{ggplot2::geom_col()}}.}
 }
